@@ -1,6 +1,7 @@
 import java.util.Scanner;
 
 public class BenFisherRazMazliah {
+    
 
     public static void main(String[] args) {
         // Submitters: Ben Fisher, Raz Mazliah
