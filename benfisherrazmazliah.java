@@ -1,134 +1,113 @@
 import java.util.Scanner;
 
 public class BenFisherRazMazliah {
-    
 
     public static void main(String[] args) {
         // Submitters: Ben Fisher, Raz Mazliah
 
-        Scanner scanner = new Scanner(System.in);
+        try (Scanner scanner = new Scanner(System.in)) {
+            String[] lecturers = new String[2];
+            String[] committees = new String[2];
+            String[] departments = new String[2];
 
-        String[] lecturers = new String[2];
-        String[] committees = new String[2];
-        String[] departments = new String[2];
+            int lecturerCount = 0;
+            int committeeCount = 0;
+            int departmentCount = 0;
 
-        int lecturerCount = 0;
-        int committeeCount = 0;
-        int departmentCount = 0;
+            System.out.print("Enter college name: ");
+            String collegeName = scanner.nextLine();
 
-        System.out.print("Enter college name: ");
-        String collegeName = scanner.nextLine();
+            boolean running = true;
 
-        boolean running = true;
+            while (running) {
+                printMenu(collegeName);
+                int choice = scanner.nextInt();
+                scanner.nextLine();
 
-        while (running) {
-            printMenu(collegeName);
-            int choice = scanner.nextInt();
-            scanner.nextLine();
-
-            switch (choice) {
-                case 0:
-                    running = false;
-                    System.out.println("Exiting program.");
-                    break;
-
-                case 1:
-                    if (lecturerCount == lecturers.length) {
-                        lecturers = growArray(lecturers);
+                switch (choice) {
+                    case 0 -> {
+                        running = false;
+                        System.out.println("Exiting program.");
                     }
+                    case 1 -> {
+                        if (lecturerCount == lecturers.length) {
+                            lecturers = growArray(lecturers);
+                        }
 
-                    String lecturer = getUniqueName(scanner, lecturers, lecturerCount, "lecturer");
-                    if (lecturer == null) {
-                        break;
+                        String lecturer = getUniqueName(scanner, lecturers, lecturerCount, "lecturer");
+                        if (lecturer == null) {
+                            break;
+                        }
+
+                        lecturers[lecturerCount] = lecturer;
+                        lecturerCount++;
+                        System.out.println("- Lecturer added successfully.");
                     }
+                    case 2 -> {
+                        if (committeeCount == committees.length) {
+                            committees = growArray(committees);
+                        }
 
-                    lecturers[lecturerCount] = lecturer;
-                    lecturerCount++;
-                    System.out.println("- Lecturer added successfully.");
-                    break;
+                        String committee = getUniqueName(scanner, committees, committeeCount, "committee");
+                        if (committee == null) {
+                            break;
+                        }
 
-                case 2:
-                    if (committeeCount == committees.length) {
-                        committees = growArray(committees);
+                        committees[committeeCount] = committee;
+                        committeeCount++;
+                        System.out.println("- Committee added successfully.");
                     }
+                    case 3 -> {
+                        if (departmentCount == departments.length) {
+                            departments = growArray(departments);
+                        }
 
-                    String committee = getUniqueName(scanner, committees, committeeCount, "committee");
-                    if (committee == null) {
-                        break;
+                        String department = getUniqueName(scanner, departments, departmentCount, "department");
+                        if (department == null) {
+                            break;
+                        }
+
+                        departments[departmentCount] = department;
+                        departmentCount++;
+                        System.out.println("- Department added successfully.");
                     }
+                    case 4 -> {
+                        String lecturerName = getValidInput(scanner, "- Enter lecturer name: ");
+                        if (lecturerName == null) {
+                            break;
+                        }
 
-                    committees[committeeCount] = committee;
-                    committeeCount++;
-                    System.out.println("- Committee added successfully.");
-                    break;
+                        String committeeName = getValidInput(scanner, "- Enter committee name: ");
+                        if (committeeName == null) {
+                            break;
+                        }
 
-                case 3:
-                    if (departmentCount == departments.length) {
-                        departments = growArray(departments);
+                        boolean lecturerExists = exists(lecturers, lecturerCount, lecturerName);
+                        boolean committeeExists = exists(committees, committeeCount, committeeName);
+
+                        if (!lecturerExists) {
+                            System.out.println("The lecturer does not exist.");
+                        }
+
+                        if (!committeeExists) {
+                            System.out.println("The committee does not exist.");
+                        }
+
+                        if (lecturerExists && committeeExists) {
+                            System.out.println("Both the lecturer and the committee exist.");
+                            System.out.println("In part 1, no actual assignment is required.");
+                        }
                     }
+                    case 5 -> System.out.println("This option is not implemented in part 1.");
+                    case 6 -> System.out.println("This option is not implemented in part 1.");
+                    case 7 -> printItems(lecturers, lecturerCount, "Lecturers:");
+                    case 8 -> printItems(committees, committeeCount, "Committees:");
+                    default -> System.out.println("- Invalid choice. Please try again.");
+                }
 
-                    String department = getUniqueName(scanner, departments, departmentCount, "department");
-                    if (department == null) {
-                        break;
-                    }
-
-                    departments[departmentCount] = department;
-                    departmentCount++;
-                    System.out.println("- Department added successfully.");
-                    break;
-
-                case 4:
-                    String lecturerName = getValidInput(scanner, "- Enter lecturer name: ");
-                    if (lecturerName == null) {
-                        break;
-                    }
-
-                    String committeeName = getValidInput(scanner, "- Enter committee name: ");
-                    if (committeeName == null) {
-                        break;
-                    }
-
-                    boolean lecturerExists = exists(lecturers, lecturerCount, lecturerName);
-                    boolean committeeExists = exists(committees, committeeCount, committeeName);
-
-                    if (!lecturerExists) {
-                        System.out.println("The lecturer does not exist.");
-                    }
-
-                    if (!committeeExists) {
-                        System.out.println("The committee does not exist.");
-                    }
-
-                    if (lecturerExists && committeeExists) {
-                        System.out.println("Both the lecturer and the committee exist.");
-                        System.out.println("In part 1, no actual assignment is required.");
-                    }
-                    break;
-
-                case 5:
-                    System.out.println("This option is not implemented in part 1.");
-                    break;
-
-                case 6:
-                    System.out.println("This option is not implemented in part 1.");
-                    break;
-
-                case 7:
-                    printItems(lecturers, lecturerCount, "Lecturers:");
-                    break;
-
-                case 8:
-                    printItems(committees, committeeCount, "Committees:");
-                    break;
-
-                default:
-                    System.out.println("- Invalid choice. Please try again.");
+                System.out.println();
             }
-
-            System.out.println();
         }
-
-        scanner.close();
     }
 
     public static void printMenu(String collegeName) {
@@ -156,10 +135,7 @@ public class BenFisherRazMazliah {
 
     public static String[] growArray(String[] arr) {
         String[] newArr = new String[arr.length * 2];
-
-        for (int i = 0; i < arr.length; i++) {
-            newArr[i] = arr[i];
-        }
+        System.arraycopy(arr, 0, newArr, 0, arr.length);
 
         return newArr;
     }
