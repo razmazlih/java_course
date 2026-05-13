@@ -52,4 +52,12 @@ public class Lecturer {
     public boolean isDoctorOrAbove() {
         return degree.isDoctorOrAbove();
     }
+
+    public String toString() {
+        return "Name: " + name +
+                ", ID: " + idNumber +
+                ", Degree: " + degree +
+                ", Degree name: " + degreeName +
+                ", Salary: " + salary;
+    }
 }
