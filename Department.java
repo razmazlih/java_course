@@ -2,9 +2,11 @@ public class Department {
         private String name;
         private Lecturer[] lecturers;
         private int lecturerCount;
+        private int studentCount;
 
-    public Department(String name) {
+    public Department(String name, int studentCount) {
         this.name = name;
+        this.studentCount = studentCount;
         this.lecturers = new Lecturer[10];
         this.lecturerCount = 0;
     }
@@ -65,6 +67,7 @@ public class Department {
 
     public String toString() {
         String result = "Department name: " + name +
+                ", Students count: " + studentCount +
                 ", Lecturers count: " + lecturerCount +
                 "\nLecturers:";
 

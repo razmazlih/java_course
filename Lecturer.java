@@ -27,6 +27,10 @@ public class Lecturer {
         return salary;
     }
 
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
+
     private void increaseCommitteesArray() {
         Committee[] newCommittees = new Committee[committees.length * 2];
 
