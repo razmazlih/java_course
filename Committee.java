@@ -73,4 +73,17 @@ public class Committee {
         this.chairman = chairman;
         return true;
     }
+
+    public String toString() {
+        String result = "Committee name: " + name +
+                ", Chairman: " + chairman +
+                ", Members count: " + memberCount +
+                ", Members:";
+        
+        for (int i = 0; i < memberCount; i++) {
+            result += "\n" + (i + 1) + ". " + members[i];
+        }
+
+        return result;
+    }
 }
