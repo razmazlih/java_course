@@ -74,5 +74,19 @@ public class Department {
 
         return result;
     }
+
+    public double getAverageSalary() {
+        if (lecturerCount == 0) {
+            return 0;
+        }
+
+        double sum = 0;
+
+        for (int i = 0; i < lecturerCount; i++) {
+            sum += lecturers[i].getSalary();
+        }
+
+        return sum / lecturerCount;
+    }
 }
 

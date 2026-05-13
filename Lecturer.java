@@ -23,6 +23,9 @@ public class Lecturer {
         return name;
     }
 
+    public double getSalary() {
+        return salary;
+    }
 
     private void increaseCommitteesArray() {
         Committee[] newCommittees = new Committee[committees.length * 2];
