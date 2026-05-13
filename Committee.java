@@ -16,4 +16,14 @@ public class Committee {
             this.chairman = null;
         }
     }
+
+    private void increaseMembersArray() {
+        Lecturer[] newMembers = new Lecturer[members.length * 2];
+
+        for (int i = 0; i < memberCount; i++) { 
+            newMembers[i] = members[i];
+        }
+
+        members = newMembers;
+    }
 }
