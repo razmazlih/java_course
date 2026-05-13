@@ -6,7 +6,6 @@ public class Committee {
 
     public Committee(String name, Lecturer chairman) {
         this.name = name;
-        this.chairman = chairman;
         this.members = new Lecturer[10];
         this.memberCount = 0;
 
@@ -45,5 +44,24 @@ public class Committee {
         members[memberCount] = lecturer;
         memberCount++;
         return true;
+    }
+
+    public boolean removeMember(Lecturer lecturer) {
+        if (lecturer == null) {
+            return false;
+        }
+
+        for (int i = 0; i < memberCount; i++) {
+            if (members[i] == lecturer) {
+                for (int j = i; j < memberCount -1; j++) {
+                    members[j] = members[j + 1];
+                }
+
+                members[memberCount - 1] = null;
+                return true;
+            }
+        }
+
+        return false;
     }
 }
