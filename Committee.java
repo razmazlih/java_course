@@ -8,12 +8,7 @@ public class Committee {
         this.name = name;
         this.members = new Lecturer[10];
         this.memberCount = 0;
-
-        if (chairman != null && chairman.isDoctorOrAbove()) {
-            this.chairman = chairman;
-        } else {
-            this.chairman = null;
-        }
+        setChairman(chairman);
     }
 
     private void increaseMembersArray() {
@@ -64,5 +59,18 @@ public class Committee {
         }
 
         return false;
+    }
+
+    public boolean setChairman(Lecturer chairman) {
+        if (chairman == null) {
+            return false;
+        }
+
+        if (!chairman.isDoctorOrAbove()) {
+            return false;
+        }
+
+        this.chairman = chairman;
+        return true;
     }
 }
