@@ -26,4 +26,24 @@ public class Committee {
 
         members = newMembers;
     }
+
+    public boolean addMember(Lecturer lecturer) {
+        if (lecturer == null) {
+            return false;
+        }
+
+        for (int i = 0; i < memberCount; i++) {
+            if (members[i] == lecturer) {
+                return false;
+            }
+        }
+
+        if (members.length == memberCount) {
+            increaseMembersArray();
+        }
+
+        members[memberCount] = lecturer;
+        memberCount++;
+        return true;
+    }
 }
