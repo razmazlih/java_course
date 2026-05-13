@@ -58,5 +58,17 @@ public class Department {
         
         return false;
     }
+
+    public String toString() {
+        String result = "Department name: " + name +
+                ", Lecturers count: " + lecturerCount +
+                "\nLecturers:";
+
+        for (int i = 0; i < lecturerCount; i++) {
+            result += "\n" + (i + 1) + ". " + lecturers[i];
+        }
+
+        return result;
+    }
 }
 

@@ -78,7 +78,7 @@ public class Committee {
         String result = "Committee name: " + name +
                 ", Chairman: " + chairman +
                 ", Members count: " + memberCount +
-                ", Members:";
+                "\nMembers:";
         
         for (int i = 0; i < memberCount; i++) {
             result += "\n" + (i + 1) + ". " + members[i];
