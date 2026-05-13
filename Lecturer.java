@@ -22,7 +22,7 @@ public class Lecturer {
     private void increaseCommitteesArray() {
         Committee[] newCommittees = new Committee[committees.length * 2];
 
-        for (int i = 0; i < committees.length; i++) {
+        for (int i = 0; i < committeeCount; i++) {
             newCommittees[i] = committees[i];
         }
 
@@ -30,6 +30,16 @@ public class Lecturer {
     }
 
     public boolean addCommittee(Committee committee) {
+        if (committee == null) {
+            return false;
+        }
+
+        for (int i = 0; i < committeeCount; i++) {
+            if (committees[i] == committee) {
+                return false;
+            }
+        }
+        
         if (committeeCount == committees.length) {
             increaseCommitteesArray();
         }
