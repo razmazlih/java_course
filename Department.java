@@ -8,6 +8,10 @@ public class Department {
         this.lecturers = new Lecturer[10];
         this.lecturerCount = 0;
     }
+    
+    public String getName() {
+        return name;
+    }
 
     private void increaseLecturersArray() {
         Lecturer[] newLecturers = new Lecturer[lecturers.length * 2];

@@ -18,6 +18,11 @@ public class Lecturer {
         this.committees = new Committee[10];
         this.committeeCount = 0;
     }
+    
+    public String getName() {
+        return name;
+    }
+
 
     private void increaseCommitteesArray() {
         Committee[] newCommittees = new Committee[committees.length * 2];

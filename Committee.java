@@ -11,6 +11,11 @@ public class Committee {
         setChairman(chairman);
     }
 
+    public String getName() {
+        return name;
+    }
+
+
     private void increaseMembersArray() {
         Lecturer[] newMembers = new Lecturer[members.length * 2];
 
