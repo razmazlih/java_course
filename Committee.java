@@ -58,6 +58,7 @@ public class Committee {
                 }
 
                 members[memberCount - 1] = null;
+                memberCount--;
                 return true;
             }
         }
