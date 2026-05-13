@@ -38,4 +38,8 @@ public class Lecturer {
         committeeCount++;
         return true;
     }
+
+    public boolean isDoctorOrAbove() {
+        return degree.isDoctorOrAbove();
+    }
 }
