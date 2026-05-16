@@ -1,3 +1,7 @@
+// Submitters:
+// Ben Fisher
+// Raz Mazliah
+
 import java.util.Scanner;
 
 public class BenFisherRazMazliah {
