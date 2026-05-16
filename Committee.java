@@ -31,6 +31,10 @@ public class Committee {
             return false;
         }
 
+        if (lecturer == chairman) {
+            return false;
+        }
+
         for (int i = 0; i < memberCount; i++) {
             if (members[i] == lecturer) {
                 return false;
@@ -75,6 +79,7 @@ public class Committee {
             return false;
         }
 
+        removeMember(chairman);
         this.chairman = chairman;
         return true;
     }

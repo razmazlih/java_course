@@ -61,6 +61,24 @@ public class Lecturer {
         return true;
     }
 
+    public boolean removeCommittee(Committee committee) {
+        if (committee == null) {
+            return false;
+        }
+
+        for (int i = 0; i < committeeCount; i++) {
+            if (committees[i] == committee) {
+                for (int j = i; j < committeeCount; j++) {
+                    committees[j] = committees[j + 1];
+                }
+                committees[committeeCount - 1] = null;
+                committeeCount--;
+                return true;
+            }
+        }
+        return false;
+    }
+
     public boolean isDoctorOrAbove() {
         return degree.isDoctorOrAbove();
     }
