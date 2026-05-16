@@ -1,108 +1,34 @@
 import java.util.Scanner;
 
 public class BenFisherRazMazliah {
-
     public static void main(String[] args) {
-        // Submitters: Ben Fisher, Raz Mazliah
-
         try (Scanner scanner = new Scanner(System.in)) {
-            String[] lecturers = new String[2];
-            String[] committees = new String[2];
-            String[] departments = new String[2];
-
-            int lecturerCount = 0;
-            int committeeCount = 0;
-            int departmentCount = 0;
-
-            System.out.print("Enter college name: ");
-            String collegeName = scanner.nextLine();
+            String collegeName = readNonEmptyString(scanner, "Enter college name: ");
+            College college = new College(collegeName);
 
             boolean running = true;
 
             while (running) {
-                printMenu(collegeName);
-                int choice = scanner.nextInt();
-                scanner.nextLine();
+                printMenu(college.getName());
+                int choice = readInt(scanner, "Choose an option: ");
 
                 switch (choice) {
                     case 0 -> {
                         running = false;
                         System.out.println("Exiting program.");
                     }
-                    case 1 -> {
-                        if (lecturerCount == lecturers.length) {
-                            lecturers = growArray(lecturers);
-                        }
-
-                        String lecturer = getUniqueName(scanner, lecturers, lecturerCount, "lecturer");
-                        if (lecturer == null) {
-                            break;
-                        }
-
-                        lecturers[lecturerCount] = lecturer;
-                        lecturerCount++;
-                        System.out.println("- Lecturer added successfully.");
-                    }
-                    case 2 -> {
-                        if (committeeCount == committees.length) {
-                            committees = growArray(committees);
-                        }
-
-                        String committee = getUniqueName(scanner, committees, committeeCount, "committee");
-                        if (committee == null) {
-                            break;
-                        }
-
-                        committees[committeeCount] = committee;
-                        committeeCount++;
-                        System.out.println("- Committee added successfully.");
-                    }
-                    case 3 -> {
-                        if (departmentCount == departments.length) {
-                            departments = growArray(departments);
-                        }
-
-                        String department = getUniqueName(scanner, departments, departmentCount, "department");
-                        if (department == null) {
-                            break;
-                        }
-
-                        departments[departmentCount] = department;
-                        departmentCount++;
-                        System.out.println("- Department added successfully.");
-                    }
-                    case 4 -> {
-                        String lecturerName = getValidInput(scanner, "- Enter lecturer name: ");
-                        if (lecturerName == null) {
-                            break;
-                        }
-
-                        String committeeName = getValidInput(scanner, "- Enter committee name: ");
-                        if (committeeName == null) {
-                            break;
-                        }
-
-                        boolean lecturerExists = exists(lecturers, lecturerCount, lecturerName);
-                        boolean committeeExists = exists(committees, committeeCount, committeeName);
-
-                        if (!lecturerExists) {
-                            System.out.println("The lecturer does not exist.");
-                        }
-
-                        if (!committeeExists) {
-                            System.out.println("The committee does not exist.");
-                        }
-
-                        if (lecturerExists && committeeExists) {
-                            System.out.println("Both the lecturer and the committee exist.");
-                            System.out.println("In part 1, no actual assignment is required.");
-                        }
-                    }
-                    case 5 -> System.out.println("This option is not implemented in part 1.");
-                    case 6 -> System.out.println("This option is not implemented in part 1.");
-                    case 7 -> printItems(lecturers, lecturerCount, "Lecturers:");
-                    case 8 -> printItems(committees, committeeCount, "Committees:");
-                    default -> System.out.println("- Invalid choice. Please try again.");
+                    case 1 -> addLecturer(scanner, college);
+                    case 2 -> addCommittee(scanner, college);
+                    case 3 -> addLecturerToCommittee(scanner, college);
+                    case 4 -> updateCommitteeChairman(scanner, college);
+                    case 5 -> removeLecturerFromCommittee(scanner, college);
+                    case 6 -> addDepartment(scanner, college);
+                    case 7 -> addLecturerToDepartment(scanner, college);
+                    case 8 -> showAverageSalary(college);
+                    case 9 -> showDepartmentAverageSalary(scanner, college);
+                    case 10 -> System.out.println(college.getAllLecturersDetails());
+                    case 11 -> System.out.println(college.getAllCommitteesDetails());
+                    default -> System.out.println("Invalid choice. Please try again.");
                 }
 
                 System.out.println();
@@ -110,85 +36,226 @@ public class BenFisherRazMazliah {
         }
     }
 
-    public static void printMenu(String collegeName) {
+    private static void printMenu(String collegeName) {
         System.out.println("----- " + collegeName + " -----");
         System.out.println("0 - Exit");
         System.out.println("1 - Add lecturer");
         System.out.println("2 - Add committee");
-        System.out.println("3 - Add department");
-        System.out.println("4 - Assign lecturer to committee");
-        System.out.println("5 - Show average salary of all lecturers");
-        System.out.println("6 - Show average salary of lecturers in a specific department");
-        System.out.println("7 - Show all lecturers");
-        System.out.println("8 - Show all committees");
-        System.out.print("Choose an option: ");
+        System.out.println("3 - Add lecturer to committee");
+        System.out.println("4 - Update committee chairman");
+        System.out.println("5 - Remove lecturer from committee");
+        System.out.println("6 - Add department");
+        System.out.println("7 - Add lecturer to department");
+        System.out.println("8 - Show average salary of all lecturers");
+        System.out.println("9 - Show average salary of lecturers in a specific department");
+        System.out.println("10 - Show all lecturers");
+        System.out.println("11 - Show all committees");
     }
 
-    public static boolean exists(String[] arr, int logicalSize, String name) {
-        for (int i = 0; i < logicalSize; i++) {
-            if (arr[i].equals(name)) {
-                return true;
+    private static void addLecturer(Scanner scanner, College college) {
+        String name = readNonEmptyString(scanner, "Enter lecturer name: ");
+        int idNumber = readPositiveInt(scanner, "Enter lecturer ID number: ");
+        Degree degree = readDegree(scanner);
+        String degreeName = readNonEmptyString(scanner, "Enter degree name: ");
+        double salary = readNonNegativeDouble(scanner, "Enter salary: ");
+
+        boolean success = college.addLecturer(name, idNumber, degree, degreeName, salary);
+
+        if (success) {
+            System.out.println("Lecturer added successfully.");
+        } else {
+            System.out.println("Could not add lecturer. Name or ID may already exist.");
+        }
+    }
+
+    private static void addCommittee(Scanner scanner, College college) {
+        String committeeName = readNonEmptyString(scanner, "Enter committee name: ");
+        String chairmanName = readNonEmptyString(scanner, "Enter chairman lecturer name: ");
+
+        boolean success = college.addCommittee(committeeName, chairmanName);
+
+        if (success) {
+            System.out.println("Committee added successfully.");
+        } else {
+            System.out.println("Could not add committee. Check that the committee does not exist and the chairman is a doctor or professor.");
+        }
+    }
+
+    private static void addLecturerToCommittee(Scanner scanner, College college) {
+        String lecturerName = readNonEmptyString(scanner, "Enter lecturer name: ");
+        String committeeName = readNonEmptyString(scanner, "Enter committee name: ");
+
+        boolean success = college.addLecturerToCommittee(lecturerName, committeeName);
+
+        if (success) {
+            System.out.println("Lecturer added to committee successfully.");
+        } else {
+            System.out.println("Could not add lecturer to committee. Check that both exist and the lecturer is not already a member.");
+        }
+    }
+
+    private static void updateCommitteeChairman(Scanner scanner, College college) {
+        String committeeName = readNonEmptyString(scanner, "Enter committee name: ");
+        String chairmanName = readNonEmptyString(scanner, "Enter new chairman lecturer name: ");
+
+        boolean success = college.updateCommitteeChairman(committeeName, chairmanName);
+
+        if (success) {
+            System.out.println("Committee chairman updated successfully.");
+        } else {
+            System.out.println("Could not update chairman. Check that the committee exists and the new chairman is a doctor or professor.");
+        }
+    }
+
+    private static void removeLecturerFromCommittee(Scanner scanner, College college) {
+        String lecturerName = readNonEmptyString(scanner, "Enter lecturer name: ");
+        String committeeName = readNonEmptyString(scanner, "Enter committee name: ");
+
+        boolean success = college.removeLecturerFromCommittee(lecturerName, committeeName);
+
+        if (success) {
+            System.out.println("Lecturer removed from committee successfully.");
+        } else {
+            System.out.println("Could not remove lecturer from committee. Check that both exist and the lecturer is a committee member.");
+        }
+    }
+
+    private static void addDepartment(Scanner scanner, College college) {
+        String departmentName = readNonEmptyString(scanner, "Enter department name: ");
+        int studentCount = readNonNegativeInt(scanner, "Enter number of students: ");
+
+        boolean success = college.addDepartment(departmentName, studentCount);
+
+        if (success) {
+            System.out.println("Department added successfully.");
+        } else {
+            System.out.println("Could not add department. Department may already exist.");
+        }
+    }
+
+    private static void addLecturerToDepartment(Scanner scanner, College college) {
+        String lecturerName = readNonEmptyString(scanner, "Enter lecturer name: ");
+        String departmentName = readNonEmptyString(scanner, "Enter department name: ");
+
+        boolean success = college.addLecturerToDepartment(lecturerName, departmentName);
+
+        if (success) {
+            System.out.println("Lecturer added to department successfully.");
+        } else {
+            System.out.println("Could not add lecturer to department. Check that both exist and the lecturer is not already assigned to a department.");
+        }
+    }
+
+    private static void showAverageSalary(College college) {
+        double average = college.getAverageSalary();
+        System.out.println("Average salary of all lecturers: " + String.format("%.2f", average));
+    }
+
+    private static void showDepartmentAverageSalary(Scanner scanner, College college) {
+        String departmentName = readNonEmptyString(scanner, "Enter department name: ");
+        double average = college.getDepartmentAverageSalary(departmentName);
+
+        if (average == -1) {
+            System.out.println("Department does not exist.");
+        } else {
+            System.out.println("Average salary in department: " + String.format("%.2f", average));
+        }
+    }
+
+    private static Degree readDegree(Scanner scanner) {
+        while (true) {
+            System.out.println("Choose degree:");
+            System.out.println("1 - FIRST");
+            System.out.println("2 - SECOND");
+            System.out.println("3 - DOCTOR");
+            System.out.println("4 - PROFESSOR");
+
+            int choice = readInt(scanner, "Enter degree number: ");
+
+            switch (choice) {
+                case 1 -> {
+                    return Degree.FIRST;
+                }
+                case 2 -> {
+                    return Degree.SECOND;
+                }
+                case 3 -> {
+                    return Degree.DOCTOR;
+                }
+                case 4 -> {
+                    return Degree.PROFESSOR;
+                }
+                default -> System.out.println("Invalid degree. Please try again.");
             }
         }
-        return false;
     }
 
-    public static String[] growArray(String[] arr) {
-        String[] newArr = new String[arr.length * 2];
-        System.arraycopy(arr, 0, newArr, 0, arr.length);
-
-        return newArr;
-    }
-
-    public static String getValidInput(Scanner scanner, String message) {
-        String input;
-
+    private static String readNonEmptyString(Scanner scanner, String message) {
         while (true) {
-            System.out.println("- To go back, enter 0.");
             System.out.print(message);
-            input = scanner.nextLine();
+            String input = scanner.nextLine().trim();
 
-            if (input.equals("0")) {
-                return null;
+            if (!input.isEmpty()) {
+                return input;
             }
 
-            if (input.trim().isEmpty()) {
-                System.out.println("-!- Error: no input entered. Please try again.");
-                continue;
-            }
-
-            return input;
+            System.out.println("Input cannot be empty. Please try again.");
         }
     }
 
-    public static String getUniqueName(Scanner scanner, String[] arr, int logicalSize, String type) {
-        String name;
-
+    private static int readInt(Scanner scanner, String message) {
         while (true) {
-            name = getValidInput(scanner, "- Enter " + type + " name: ");
+            System.out.print(message);
+            String input = scanner.nextLine().trim();
 
-            if (name == null) {
-                return null;
+            try {
+                return Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number. Please enter a whole number.");
             }
-
-            if (exists(arr, logicalSize, name)) {
-                System.out.println("-!- This " + type + " already exists. Please enter a different name.");
-                continue;
-            }
-
-            return name;
         }
     }
 
-    public static void printItems(String[] arr, int logicalSize, String title) {
-        if (logicalSize == 0) {
-            System.out.println("- No data to display.");
-            return;
-        }
+    private static int readPositiveInt(Scanner scanner, String message) {
+        while (true) {
+            int value = readInt(scanner, message);
 
-        System.out.println(title);
-        for (int i = 0; i < logicalSize; i++) {
-            System.out.println((i + 1) + ". " + arr[i]);
+            if (value > 0) {
+                return value;
+            }
+
+            System.out.println("Number must be positive.");
+        }
+    }
+
+    private static int readNonNegativeInt(Scanner scanner, String message) {
+        while (true) {
+            int value = readInt(scanner, message);
+
+            if (value >= 0) {
+                return value;
+            }
+
+            System.out.println("Number cannot be negative.");
+        }
+    }
+
+    private static double readNonNegativeDouble(Scanner scanner, String message) {
+        while (true) {
+            System.out.print(message);
+            String input = scanner.nextLine().trim();
+
+            try {
+                double value = Double.parseDouble(input);
+
+                if (value >= 0) {
+                    return value;
+                }
+
+                System.out.println("Number cannot be negative.");
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid number. Please enter a valid number.");
+            }
         }
     }
 }
