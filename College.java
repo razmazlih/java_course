@@ -161,6 +161,7 @@ public class College {
         }
 
         removeCommitteeFromLecturer(lecturerIndex, committee);
+        lecturer.removeCommittee(committee);
 
         return true;
     }
