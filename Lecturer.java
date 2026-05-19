@@ -68,7 +68,7 @@ public class Lecturer {
 
         for (int i = 0; i < committeeCount; i++) {
             if (committees[i] == committee) {
-                for (int j = i; j < committeeCount; j++) {
+                for (int j = i; j < committeeCount - 1; j++) {
                     committees[j] = committees[j + 1];
                 }
                 committees[committeeCount - 1] = null;
