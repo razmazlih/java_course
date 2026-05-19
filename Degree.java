@@ -4,7 +4,7 @@ public enum Degree {
     DOCTOR(3),
     PROFESSOR(4);
 
-    private int rank;
+    private final int rank;
 
     Degree(int rank) {
         this.rank = rank;

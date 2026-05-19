@@ -110,11 +110,11 @@ public class College {
             return false;
         }
 
-        if (lecturerDepartments[lecturerIndex] != null) {
+        Lecturer lecturer = lecturers[lecturerIndex];
+
+        if (lecturer.getDepartment() != null) {
             return false;
         }
-
-        Lecturer lecturer = lecturers[lecturerIndex];
 
         if (!department.addLecturer(lecturer)) {
             return false;
@@ -140,8 +140,15 @@ public class College {
             return false;
         }
 
-        addCommitteeToLecturer(lecturerIndex, committee);
-        lecturer.addCommittee(committee);
+        boolean addedToCollege = addCommitteeToLecturer(lecturerIndex, committee);
+        boolean addedToLecturer = lecturer.addCommittee(committee);
+
+        if (!addedToCollege || !addedToLecturer) {
+            committee.removeMember(lecturer);
+            removeCommitteeFromLecturer(lecturerIndex, committee);
+            lecturer.removeCommittee(committee);
+            return false;
+        }
 
         return true;
     }
@@ -160,8 +167,15 @@ public class College {
             return false;
         }
 
-        removeCommitteeFromLecturer(lecturerIndex, committee);
-        lecturer.removeCommittee(committee);
+        boolean removedFromCollege = removeCommitteeFromLecturer(lecturerIndex, committee);
+        boolean removedFromLecturer = lecturer.removeCommittee(committee);
+
+        if (!removedFromCollege || !removedFromLecturer) {
+            committee.addMember(lecturer);
+            addCommitteeToLecturer(lecturerIndex, committee);
+            lecturer.addCommittee(committee);
+            return false;
+        }
 
         return true;
     }
@@ -346,11 +360,13 @@ public class College {
     }
 
     private String getDepartmentNameForLecturer(int lecturerIndex) {
-        if (lecturerDepartments[lecturerIndex] == null) {
+        Department department = lecturers[lecturerIndex].getDepartment();
+
+        if (department == null) {
             return "No department";
         }
 
-        return lecturerDepartments[lecturerIndex].getName();
+        return department.getName();
     }
 
     private String getCommitteesNamesForLecturer(int lecturerIndex) {

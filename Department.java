@@ -1,8 +1,8 @@
 public class Department {
-        private String name;
-        private Lecturer[] lecturers;
-        private int lecturerCount;
-        private int studentCount;
+    private String name;
+    private Lecturer[] lecturers;
+    private int lecturerCount;
+    private int studentCount;
 
     public Department(String name, int studentCount) {
         this.name = name;
@@ -65,6 +65,7 @@ public class Department {
         return false;
     }
 
+    @Override
     public String toString() {
         String result = "Department name: " + name +
                 ", Students count: " + studentCount +

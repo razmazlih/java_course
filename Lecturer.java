@@ -31,6 +31,10 @@ public class Lecturer {
         this.department = department;
     }
 
+    public Department getDepartment() {
+        return department;
+    }
+
     private void increaseCommitteesArray() {
         Committee[] newCommittees = new Committee[committees.length * 2];
 
@@ -83,6 +87,7 @@ public class Lecturer {
         return degree.isDoctorOrAbove();
     }
 
+    @Override
     public String toString() {
         return "Name: " + name +
                 ", ID: " + idNumber +

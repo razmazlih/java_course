@@ -57,7 +57,7 @@ public class Committee {
 
         for (int i = 0; i < memberCount; i++) {
             if (members[i] == lecturer) {
-                for (int j = i; j < memberCount -1; j++) {
+                for (int j = i; j < memberCount - 1; j++) {
                     members[j] = members[j + 1];
                 }
 
@@ -84,6 +84,7 @@ public class Committee {
         return true;
     }
 
+    @Override
     public String toString() {
         String result = "Committee name: " + name +
                 ", Chairman: " + chairman +
