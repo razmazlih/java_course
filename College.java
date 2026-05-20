@@ -182,13 +182,26 @@ public class College {
 
     public boolean updateCommitteeChairman(String committeeName, String chairmanName) {
         Committee committee = findCommitteeByName(committeeName);
-        Lecturer chairman = findLecturerByName(chairmanName);
+        int chairmanIndex = findLecturerIndexByName(chairmanName);
 
-        if (committee == null || chairman == null || !chairman.isDoctorOrAbove()) {
+        if (committee == null || chairmanIndex == -1) {
             return false;
         }
 
-        return committee.setChairman(chairman);
+        Lecturer chairman = lecturers[chairmanIndex];
+
+        if (!chairman.isDoctorOrAbove()) {
+            return false;
+        }
+
+        boolean success = committee.setChairman(chairman);
+
+        if (success) {
+            removeCommitteeFromLecturer(chairmanIndex, committee);
+            chairman.removeCommittee(committee);
+        }
+
+        return success;
     }
 
     public double getAverageSalary() {
