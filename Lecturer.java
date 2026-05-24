@@ -5,6 +5,8 @@ public class Lecturer {
     private String degreeName;
     private double salary;
     private Department department;
+    private Committee[] committees;
+    private int committeeCount;
 
     public Lecturer(String name, int idNumber, Degree degree, String degreeName, double salary) {
         this.name = name;
@@ -13,6 +15,8 @@ public class Lecturer {
         this.degreeName = degreeName;
         this.salary = salary;
         this.department = null;
+        this.committees = new Committee[2];
+        this.committeeCount = 0;
     }
     
     public String getName() {
@@ -29,6 +33,90 @@ public class Lecturer {
 
     public Department getDepartment() {
         return department;
+    }
+
+    private void increaseCommitteesArray() {
+        Committee[] newCommittees = new Committee[committees.length * 2];
+
+        for (int i = 0; i < committeeCount; i++) {
+            newCommittees[i] = committees[i];
+        }
+
+        committees = newCommittees;
+    }
+
+    public boolean addCommittee(Committee committee) {
+        if (committee == null) {
+            return false;
+        }
+
+        if (hasCommittee(committee)) {
+            return false;
+        }
+
+        if (committeeCount == committees.length) {
+            increaseCommitteesArray();
+        }
+
+        committees[committeeCount] = committee;
+        committeeCount++;
+        return true;
+    }
+
+    public boolean removeCommittee(Committee committee) {
+        if (committee == null) {
+            return false;
+        }
+
+        for (int i = 0; i < committeeCount; i++) {
+            if (committees[i] == committee) {
+                for (int j = i; j < committeeCount - 1; j++) {
+                    committees[j] = committees[j + 1];
+                }
+
+                committees[committeeCount - 1] = null;
+                committeeCount--;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean hasCommittee(Committee committee) {
+        if (committee == null) {
+            return false;
+        }
+
+        for (int i = 0; i < committeeCount; i++) {
+            if (committees[i] == committee) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public String getCommitteeNames() {
+        if (committeeCount == 0) {
+            return "No committees";
+        }
+
+        String result = "";
+
+        for (int i = 0; i < committeeCount; i++) {
+            if (i > 0) {
+                result += ", ";
+            }
+
+            result += committees[i].getName();
+
+            if (committees[i].getChairman() == this) {
+                result += " (chairman)";
+            }
+        }
+
+        return result;
     }
 
     public boolean isDoctorOrAbove() {
