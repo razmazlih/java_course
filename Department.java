@@ -7,7 +7,7 @@ public class Department {
     public Department(String name, int studentCount) {
         this.name = name;
         this.studentCount = studentCount;
-        this.lecturers = new Lecturer[10];
+        this.lecturers = new Lecturer[2];
         this.lecturerCount = 0;
     }
     
@@ -93,4 +93,3 @@ public class Department {
         return sum / lecturerCount;
     }
 }
-

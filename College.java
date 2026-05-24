@@ -7,8 +7,6 @@ public class College {
 
     private Department[] lecturerDepartments;
     private int[] lecturerIds;
-    private Committee[][] lecturerCommittees;
-    private int[] lecturerCommitteeCounts;
 
     private int lecturerCount;
     private int departmentCount;
@@ -23,8 +21,6 @@ public class College {
 
         this.lecturerDepartments = new Department[2];
         this.lecturerIds = new int[2];
-        this.lecturerCommittees = new Committee[2][];
-        this.lecturerCommitteeCounts = new int[2];
 
         this.lecturerCount = 0;
         this.departmentCount = 0;
@@ -51,8 +47,6 @@ public class College {
         lecturers[lecturerCount] = new Lecturer(name.trim(), idNumber, degree, degreeName.trim(), salary);
         lecturerIds[lecturerCount] = idNumber;
         lecturerDepartments[lecturerCount] = null;
-        lecturerCommittees[lecturerCount] = new Committee[2];
-        lecturerCommitteeCounts[lecturerCount] = 0;
 
         lecturerCount++;
         return true;
@@ -140,16 +134,6 @@ public class College {
             return false;
         }
 
-        boolean addedToCollege = addCommitteeToLecturer(lecturerIndex, committee);
-        boolean addedToLecturer = lecturer.addCommittee(committee);
-
-        if (!addedToCollege || !addedToLecturer) {
-            committee.removeMember(lecturer);
-            removeCommitteeFromLecturer(lecturerIndex, committee);
-            lecturer.removeCommittee(committee);
-            return false;
-        }
-
         return true;
     }
 
@@ -164,16 +148,6 @@ public class College {
         Lecturer lecturer = lecturers[lecturerIndex];
 
         if (!committee.removeMember(lecturer)) {
-            return false;
-        }
-
-        boolean removedFromCollege = removeCommitteeFromLecturer(lecturerIndex, committee);
-        boolean removedFromLecturer = lecturer.removeCommittee(committee);
-
-        if (!removedFromCollege || !removedFromLecturer) {
-            committee.addMember(lecturer);
-            addCommitteeToLecturer(lecturerIndex, committee);
-            lecturer.addCommittee(committee);
             return false;
         }
 
@@ -194,14 +168,7 @@ public class College {
             return false;
         }
 
-        boolean success = committee.setChairman(chairman);
-
-        if (success) {
-            removeCommitteeFromLecturer(chairmanIndex, committee);
-            chairman.removeCommittee(committee);
-        }
-
-        return success;
+        return committee.setChairman(chairman);
     }
 
     public double getAverageSalary() {
@@ -326,52 +293,6 @@ public class College {
         return null;
     }
 
-    private boolean addCommitteeToLecturer(int lecturerIndex, Committee committee) {
-        if (lecturerIndex < 0 || lecturerIndex >= lecturerCount || committee == null) {
-            return false;
-        }
-
-        for (int i = 0; i < lecturerCommitteeCounts[lecturerIndex]; i++) {
-            if (lecturerCommittees[lecturerIndex][i] == committee) {
-                return false;
-            }
-        }
-
-        if (lecturerCommittees[lecturerIndex] == null) {
-            lecturerCommittees[lecturerIndex] = new Committee[2];
-        }
-
-        if (lecturerCommitteeCounts[lecturerIndex] == lecturerCommittees[lecturerIndex].length) {
-            increaseLecturerCommitteesArray(lecturerIndex);
-        }
-
-        lecturerCommittees[lecturerIndex][lecturerCommitteeCounts[lecturerIndex]] = committee;
-        lecturerCommitteeCounts[lecturerIndex]++;
-
-        return true;
-    }
-
-    private boolean removeCommitteeFromLecturer(int lecturerIndex, Committee committee) {
-        if (lecturerIndex < 0 || lecturerIndex >= lecturerCount || committee == null) {
-            return false;
-        }
-
-        for (int i = 0; i < lecturerCommitteeCounts[lecturerIndex]; i++) {
-            if (lecturerCommittees[lecturerIndex][i] == committee) {
-                for (int j = i; j < lecturerCommitteeCounts[lecturerIndex] - 1; j++) {
-                    lecturerCommittees[lecturerIndex][j] = lecturerCommittees[lecturerIndex][j + 1];
-                }
-
-                lecturerCommittees[lecturerIndex][lecturerCommitteeCounts[lecturerIndex] - 1] = null;
-                lecturerCommitteeCounts[lecturerIndex]--;
-
-                return true;
-            }
-        }
-
-        return false;
-    }
-
     private String getDepartmentNameForLecturer(int lecturerIndex) {
         Department department = lecturers[lecturerIndex].getDepartment();
 
@@ -383,18 +304,25 @@ public class College {
     }
 
     private String getCommitteesNamesForLecturer(int lecturerIndex) {
-        if (lecturerCommitteeCounts[lecturerIndex] == 0) {
-            return "No committees";
+        String result = "";
+        Lecturer lecturer = lecturers[lecturerIndex];
+
+        for (int i = 0; i < committeeCount; i++) {
+            if (committees[i].getChairman() == lecturer || committees[i].hasMember(lecturer)) {
+                if (!result.isEmpty()) {
+                    result += ", ";
+                }
+
+                result += committees[i].getName();
+
+                if (committees[i].getChairman() == lecturer) {
+                    result += " (chairman)";
+                }
+            }
         }
 
-        String result = "";
-
-        for (int i = 0; i < lecturerCommitteeCounts[lecturerIndex]; i++) {
-            if (i > 0) {
-                result += ", ";
-            }
-
-            result += lecturerCommittees[lecturerIndex][i].getName();
+        if (result.isEmpty()) {
+            return "No committees";
         }
 
         return result;
@@ -404,22 +332,16 @@ public class College {
         Lecturer[] newLecturers = new Lecturer[lecturers.length * 2];
         Department[] newLecturerDepartments = new Department[lecturerDepartments.length * 2];
         int[] newLecturerIds = new int[lecturerIds.length * 2];
-        Committee[][] newLecturerCommittees = new Committee[lecturerCommittees.length * 2][];
-        int[] newLecturerCommitteeCounts = new int[lecturerCommitteeCounts.length * 2];
 
         for (int i = 0; i < lecturerCount; i++) {
             newLecturers[i] = lecturers[i];
             newLecturerDepartments[i] = lecturerDepartments[i];
             newLecturerIds[i] = lecturerIds[i];
-            newLecturerCommittees[i] = lecturerCommittees[i];
-            newLecturerCommitteeCounts[i] = lecturerCommitteeCounts[i];
         }
 
         lecturers = newLecturers;
         lecturerDepartments = newLecturerDepartments;
         lecturerIds = newLecturerIds;
-        lecturerCommittees = newLecturerCommittees;
-        lecturerCommitteeCounts = newLecturerCommitteeCounts;
     }
 
     private void increaseDepartmentsArray() {
@@ -432,14 +354,6 @@ public class College {
         Committee[] newCommittees = new Committee[committees.length * 2];
         System.arraycopy(committees, 0, newCommittees, 0, committeeCount);
         committees = newCommittees;
-    }
-
-    private void increaseLecturerCommitteesArray(int lecturerIndex) {
-        Committee[] newCommittees = new Committee[lecturerCommittees[lecturerIndex].length * 2];
-
-        System.arraycopy(lecturerCommittees[lecturerIndex], 0, newCommittees, 0, lecturerCommitteeCounts[lecturerIndex]);
-
-        lecturerCommittees[lecturerIndex] = newCommittees;
     }
 
     private boolean isEmpty(String value) {

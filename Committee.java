@@ -6,13 +6,17 @@ public class Committee {
 
     public Committee(String name, Lecturer chairman) {
         this.name = name;
-        this.members = new Lecturer[10];
+        this.members = new Lecturer[2];
         this.memberCount = 0;
         setChairman(chairman);
     }
 
     public String getName() {
         return name;
+    }
+
+    public Lecturer getChairman() {
+        return chairman;
     }
 
 
@@ -63,6 +67,20 @@ public class Committee {
 
                 members[memberCount - 1] = null;
                 memberCount--;
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean hasMember(Lecturer lecturer) {
+        if (lecturer == null) {
+            return false;
+        }
+
+        for (int i = 0; i < memberCount; i++) {
+            if (members[i] == lecturer) {
                 return true;
             }
         }

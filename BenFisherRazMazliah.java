@@ -94,7 +94,7 @@ public class BenFisherRazMazliah {
         if (success) {
             System.out.println("Lecturer added to committee successfully.");
         } else {
-            System.out.println("Could not add lecturer to committee. Check that both exist and the lecturer is not already a member.");
+            System.out.println("Could not add lecturer to committee. Check that both exist and the lecturer is not the chairman or already a member.");
         }
     }
 
