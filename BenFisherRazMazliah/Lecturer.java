@@ -1,11 +1,11 @@
-package college;
+package BenFisherRazMazliah;
 
 public class Lecturer {
-    private String name;
-    private int idNumber;
-    private Degree degree;
-    private String degreeName;
-    private double salary;
+    private final String name;
+    private final int idNumber;
+    private final Degree degree;
+    private final String degreeName;
+    private final double salary;
     private Department department;
     private Committee[] committees;
     private int committeeCount;

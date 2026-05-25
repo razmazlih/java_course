@@ -1,4 +1,4 @@
-package college;
+package BenFisherRazMazliah;
 
 public enum Degree {
     FIRST(1),

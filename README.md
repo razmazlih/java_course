@@ -16,7 +16,7 @@
 
 ```text
 java_course/
-└── college/
+└── BenFisherRazMazliah/
     ├── BenFisherRazMazliah.java
     ├── College.java
     ├── Lecturer.java
@@ -25,18 +25,18 @@ java_course/
     └── Degree.java
 ```
 
-כל קבצי ה־Java נמצאים בתוך התיקייה והחבילה `college`.
+כל קבצי ה־Java נמצאים בתוך התיקייה והחבילה `BenFisherRazMazliah`.
 
 כדי לקמפל:
 
 ```bash
-javac college/*.java
+javac BenFisherRazMazliah/*.java
 ```
 
 כדי להריץ:
 
 ```bash
-java college.BenFisherRazMazliah
+java BenFisherRazMazliah.BenFisherRazMazliah
 ```
 
 חשוב: אם המחלקה הראשית נקראת `public class BenFisherRazMazliah`, שם הקובץ חייב להיות בדיוק:
@@ -284,7 +284,7 @@ toString()
 לפני שמגישים צריך לבדוק:
 
 - התוכנית מתקמפלת.
-- כל קבצי ה־Java נמצאים בתוך התיקייה והחבילה `college`.
+- כל קבצי ה־Java נמצאים בתוך התיקייה והחבילה `BenFisherRazMazliah`.
 - שם הקובץ הראשי מתאים לשם המחלקה הראשית.
 - אפשר להוסיף מרצה.
 - אפשר להוסיף מחלקה.

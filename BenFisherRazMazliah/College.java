@@ -1,4 +1,4 @@
-package college;
+package BenFisherRazMazliah;
 
 public class College {
     private final String name;

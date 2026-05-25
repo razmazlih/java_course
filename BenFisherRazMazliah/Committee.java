@@ -1,7 +1,7 @@
-package college;
+package BenFisherRazMazliah;
 
 public class Committee {
-    private String name;
+    private final String name;
     private Lecturer chairman;
     private Lecturer[] members;
     private int memberCount;

@@ -2,7 +2,7 @@
 // Ben Fisher - ID: 213160005
 // Raz Mazliah - ID: 324965094
 
-package college;
+package BenFisherRazMazliah;
 
 import java.util.Scanner;
 

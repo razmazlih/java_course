@@ -1,10 +1,10 @@
-package college;
+package BenFisherRazMazliah;
 
 public class Department {
-    private String name;
+    private final String name;
     private Lecturer[] lecturers;
     private int lecturerCount;
-    private int studentCount;
+    private final int studentCount;
 
     public Department(String name, int studentCount) {
         this.name = name;
