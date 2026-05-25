@@ -16,13 +16,27 @@
 
 ```text
 java_course/
-│
-├── BenFisherRazMazliah.java
-├── College.java
-├── Lecturer.java
-├── Department.java
-├── Committee.java
-└── Degree.java
+└── college/
+    ├── BenFisherRazMazliah.java
+    ├── College.java
+    ├── Lecturer.java
+    ├── Department.java
+    ├── Committee.java
+    └── Degree.java
+```
+
+כל קבצי ה־Java נמצאים בתוך התיקייה והחבילה `college`.
+
+כדי לקמפל:
+
+```bash
+javac college/*.java
+```
+
+כדי להריץ:
+
+```bash
+java college.BenFisherRazMazliah
 ```
 
 חשוב: אם המחלקה הראשית נקראת `public class BenFisherRazMazliah`, שם הקובץ חייב להיות בדיוק:
@@ -270,7 +284,7 @@ toString()
 לפני שמגישים צריך לבדוק:
 
 - התוכנית מתקמפלת.
-- כל הקבצים נמצאים באותה תיקייה.
+- כל קבצי ה־Java נמצאים בתוך התיקייה והחבילה `college`.
 - שם הקובץ הראשי מתאים לשם המחלקה הראשית.
 - אפשר להוסיף מרצה.
 - אפשר להוסיף מחלקה.
