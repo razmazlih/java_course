@@ -17,22 +17,45 @@ public class BenFisherRazMazliah {
                 int choice = readInt(scanner, "Choose an option: ");
 
                 switch (choice) {
-                    case 0 -> {
+                    case 0:
                         running = false;
                         System.out.println("Exiting program.");
-                    }
-                    case 1 -> addLecturer(scanner, college);
-                    case 2 -> addCommittee(scanner, college);
-                    case 3 -> addLecturerToCommittee(scanner, college);
-                    case 4 -> updateCommitteeChairman(scanner, college);
-                    case 5 -> removeLecturerFromCommittee(scanner, college);
-                    case 6 -> addDepartment(scanner, college);
-                    case 7 -> addLecturerToDepartment(scanner, college);
-                    case 8 -> showAverageSalary(college);
-                    case 9 -> showDepartmentAverageSalary(scanner, college);
-                    case 10 -> System.out.println(college.getAllLecturersDetails());
-                    case 11 -> System.out.println(college.getAllCommitteesDetails());
-                    default -> System.out.println("Invalid choice. Please try again.");
+                        break;
+                    case 1:
+                        addLecturer(scanner, college);
+                        break;
+                    case 2:
+                        addCommittee(scanner, college);
+                        break;
+                    case 3:
+                        addLecturerToCommittee(scanner, college);
+                        break;
+                    case 4:
+                        updateCommitteeChairman(scanner, college);
+                        break;
+                    case 5:
+                        removeLecturerFromCommittee(scanner, college);
+                        break;
+                    case 6:
+                        addDepartment(scanner, college);
+                        break;
+                    case 7:
+                        addLecturerToDepartment(scanner, college);
+                        break;
+                    case 8:
+                        showAverageSalary(college);
+                        break;
+                    case 9:
+                        showDepartmentAverageSalary(scanner, college);
+                        break;
+                    case 10:
+                        System.out.println(college.getAllLecturersDetails());
+                        break;
+                    case 11:
+                        System.out.println(college.getAllCommitteesDetails());
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
                 }
 
                 System.out.println();
@@ -58,7 +81,17 @@ public class BenFisherRazMazliah {
 
     private static void addLecturer(Scanner scanner, College college) {
         String name = readNonEmptyString(scanner, "Enter lecturer name: ");
+        while (college.lecturerNameExists(name)) {
+            System.out.println("Lecturer name already exists. Please enter another name.");
+            name = readNonEmptyString(scanner, "Enter lecturer name: ");
+        }
+
         int idNumber = readPositiveInt(scanner, "Enter lecturer ID number: ");
+        while (college.lecturerIdExists(idNumber)) {
+            System.out.println("Lecturer ID already exists. Please enter another ID.");
+            idNumber = readPositiveInt(scanner, "Enter lecturer ID number: ");
+        }
+
         Degree degree = readDegree(scanner);
         String degreeName = readNonEmptyString(scanner, "Enter degree name: ");
         double salary = readNonNegativeDouble(scanner, "Enter salary: ");
@@ -74,6 +107,11 @@ public class BenFisherRazMazliah {
 
     private static void addCommittee(Scanner scanner, College college) {
         String committeeName = readNonEmptyString(scanner, "Enter committee name: ");
+        while (college.committeeNameExists(committeeName)) {
+            System.out.println("Committee name already exists. Please enter another name.");
+            committeeName = readNonEmptyString(scanner, "Enter committee name: ");
+        }
+
         String chairmanName = readNonEmptyString(scanner, "Enter chairman lecturer name: ");
 
         boolean success = college.addCommittee(committeeName, chairmanName);
@@ -126,6 +164,11 @@ public class BenFisherRazMazliah {
 
     private static void addDepartment(Scanner scanner, College college) {
         String departmentName = readNonEmptyString(scanner, "Enter department name: ");
+        while (college.departmentNameExists(departmentName)) {
+            System.out.println("Department name already exists. Please enter another name.");
+            departmentName = readNonEmptyString(scanner, "Enter department name: ");
+        }
+
         int studentCount = readNonNegativeInt(scanner, "Enter number of students: ");
 
         boolean success = college.addDepartment(departmentName, studentCount);
@@ -177,19 +220,16 @@ public class BenFisherRazMazliah {
             int choice = readInt(scanner, "Enter degree number: ");
 
             switch (choice) {
-                case 1 -> {
+                case 1:
                     return Degree.FIRST;
-                }
-                case 2 -> {
+                case 2:
                     return Degree.SECOND;
-                }
-                case 3 -> {
+                case 3:
                     return Degree.DOCTOR;
-                }
-                case 4 -> {
+                case 4:
                     return Degree.PROFESSOR;
-                }
-                default -> System.out.println("Invalid degree. Please try again.");
+                default:
+                    System.out.println("Invalid degree. Please try again.");
             }
         }
     }

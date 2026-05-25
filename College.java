@@ -31,6 +31,22 @@ public class College {
         return name;
     }
 
+    public boolean lecturerNameExists(String name) {
+        return findLecturerByName(name) != null;
+    }
+
+    public boolean lecturerIdExists(int idNumber) {
+        return findLecturerById(idNumber) != null;
+    }
+
+    public boolean departmentNameExists(String name) {
+        return findDepartmentByName(name) != null;
+    }
+
+    public boolean committeeNameExists(String name) {
+        return findCommitteeByName(name) != null;
+    }
+
     public boolean addLecturer(String name, int idNumber, Degree degree, String degreeName, double salary) {
         if (isEmpty(name) || idNumber <= 0 || degree == null || isEmpty(degreeName) || salary < 0) {
             return false;
@@ -360,13 +376,21 @@ public class College {
 
     private void increaseDepartmentsArray() {
         Department[] newDepartments = new Department[departments.length * 2];
-        System.arraycopy(departments, 0, newDepartments, 0, departmentCount);
+
+        for (int i = 0; i < departmentCount; i++) {
+            newDepartments[i] = departments[i];
+        }
+
         departments = newDepartments;
     }
 
     private void increaseCommitteesArray() {
         Committee[] newCommittees = new Committee[committees.length * 2];
-        System.arraycopy(committees, 0, newCommittees, 0, committeeCount);
+
+        for (int i = 0; i < committeeCount; i++) {
+            newCommittees[i] = committees[i];
+        }
+
         committees = newCommittees;
     }
 
