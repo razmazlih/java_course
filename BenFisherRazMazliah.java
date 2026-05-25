@@ -5,57 +5,63 @@
 import java.util.Scanner;
 
 public class BenFisherRazMazliah {
+    private static final String RETURN_TO_MENU_MESSAGE = "Type M at any action prompt to return to the main menu.";
+
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
-            String collegeName = readNonEmptyString(scanner, "Enter college name: ");
+            String collegeName = readInitialNonEmptyString(scanner, "Enter college name: ");
             College college = new College(collegeName);
 
             boolean running = true;
 
             while (running) {
                 printMenu(college.getName());
-                int choice = readInt(scanner, "Choose an option: ");
+                try {
+                    int choice = readInt(scanner, "Choose an option: ");
 
-                switch (choice) {
-                    case 0:
-                        running = false;
-                        System.out.println("Exiting program.");
-                        break;
-                    case 1:
-                        addLecturer(scanner, college);
-                        break;
-                    case 2:
-                        addCommittee(scanner, college);
-                        break;
-                    case 3:
-                        addLecturerToCommittee(scanner, college);
-                        break;
-                    case 4:
-                        updateCommitteeChairman(scanner, college);
-                        break;
-                    case 5:
-                        removeLecturerFromCommittee(scanner, college);
-                        break;
-                    case 6:
-                        addDepartment(scanner, college);
-                        break;
-                    case 7:
-                        addLecturerToDepartment(scanner, college);
-                        break;
-                    case 8:
-                        showAverageSalary(college);
-                        break;
-                    case 9:
-                        showDepartmentAverageSalary(scanner, college);
-                        break;
-                    case 10:
-                        System.out.println(college.getAllLecturersDetails());
-                        break;
-                    case 11:
-                        System.out.println(college.getAllCommitteesDetails());
-                        break;
-                    default:
-                        System.out.println("Invalid choice. Please try again.");
+                    switch (choice) {
+                        case 0:
+                            running = false;
+                            System.out.println("Exiting program.");
+                            break;
+                        case 1:
+                            addLecturer(scanner, college);
+                            break;
+                        case 2:
+                            addCommittee(scanner, college);
+                            break;
+                        case 3:
+                            addLecturerToCommittee(scanner, college);
+                            break;
+                        case 4:
+                            updateCommitteeChairman(scanner, college);
+                            break;
+                        case 5:
+                            removeLecturerFromCommittee(scanner, college);
+                            break;
+                        case 6:
+                            addDepartment(scanner, college);
+                            break;
+                        case 7:
+                            addLecturerToDepartment(scanner, college);
+                            break;
+                        case 8:
+                            showAverageSalary(college);
+                            break;
+                        case 9:
+                            showDepartmentAverageSalary(scanner, college);
+                            break;
+                        case 10:
+                            System.out.println(college.getAllLecturersDetails());
+                            break;
+                        case 11:
+                            System.out.println(college.getAllCommitteesDetails());
+                            break;
+                        default:
+                            System.out.println("Invalid choice. Please try again.");
+                    }
+                } catch (ReturnToMenuException e) {
+                    System.out.println("Returning to main menu.");
                 }
 
                 System.out.println();
@@ -77,6 +83,7 @@ public class BenFisherRazMazliah {
         System.out.println("9 - Show average salary of lecturers in a specific department");
         System.out.println("10 - Show all lecturers");
         System.out.println("11 - Show all committees");
+        System.out.println(RETURN_TO_MENU_MESSAGE);
     }
 
     private static void addLecturer(Scanner scanner, College college) {
@@ -236,6 +243,20 @@ public class BenFisherRazMazliah {
 
     private static String readNonEmptyString(Scanner scanner, String message) {
         while (true) {
+            System.out.print(addMenuHint(message));
+            String input = scanner.nextLine().trim();
+            checkReturnToMenu(input);
+
+            if (!input.isEmpty()) {
+                return input;
+            }
+
+            System.out.println("Input cannot be empty. Please try again.");
+        }
+    }
+
+    private static String readInitialNonEmptyString(Scanner scanner, String message) {
+        while (true) {
             System.out.print(message);
             String input = scanner.nextLine().trim();
 
@@ -249,8 +270,9 @@ public class BenFisherRazMazliah {
 
     private static int readInt(Scanner scanner, String message) {
         while (true) {
-            System.out.print(message);
+            System.out.print(addMenuHint(message));
             String input = scanner.nextLine().trim();
+            checkReturnToMenu(input);
 
             try {
                 return Integer.parseInt(input);
@@ -286,8 +308,9 @@ public class BenFisherRazMazliah {
 
     private static double readNonNegativeDouble(Scanner scanner, String message) {
         while (true) {
-            System.out.print(message);
+            System.out.print(addMenuHint(message));
             String input = scanner.nextLine().trim();
+            checkReturnToMenu(input);
 
             try {
                 double value = Double.parseDouble(input);
@@ -301,5 +324,22 @@ public class BenFisherRazMazliah {
                 System.out.println("Invalid number. Please enter a valid number.");
             }
         }
+    }
+
+    private static String addMenuHint(String message) {
+        if (message.endsWith(": ")) {
+            return message.substring(0, message.length() - 2) + " (M = main menu): ";
+        }
+
+        return message + " (M = main menu): ";
+    }
+
+    private static void checkReturnToMenu(String input) {
+        if (input.equalsIgnoreCase("m") || input.equalsIgnoreCase("menu")) {
+            throw new ReturnToMenuException();
+        }
+    }
+
+    private static class ReturnToMenuException extends RuntimeException {
     }
 }
