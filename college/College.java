@@ -1,3 +1,5 @@
+package college;
+
 public class College {
     private final String name;
 

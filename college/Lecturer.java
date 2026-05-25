@@ -1,3 +1,5 @@
+package college;
+
 public class Lecturer {
     private String name;
     private int idNumber;

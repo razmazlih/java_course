@@ -1,3 +1,5 @@
+package college;
+
 public class Committee {
     private String name;
     private Lecturer chairman;

@@ -1,3 +1,5 @@
+package college;
+
 public enum Degree {
     FIRST(1),
     SECOND(2),

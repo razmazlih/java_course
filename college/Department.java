@@ -1,3 +1,5 @@
+package college;
+
 public class Department {
     private String name;
     private Lecturer[] lecturers;
