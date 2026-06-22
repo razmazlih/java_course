@@ -95,11 +95,32 @@ public class BenFisherRazMazliah {
         }
 
         Degree degree = readDegree(scanner);
+        String[] articles = new String[0];
+        String professorshipBody = "";
+
+        if (degree == Degree.DOCTOR || degree == Degree.PROFESSOR) {
+            articles = readArticles(scanner);
+        }
+
+        if (degree == Degree.PROFESSOR) {
+            professorshipBody = readNonEmptyString(scanner,
+                    "Enter the organization/body that granted the professorship: ");
+        }
+
         String degreeName = readNonEmptyString(scanner, "Enter degree name: ");
         double salary = readNonNegativeDouble(scanner, "Enter salary: ");
+        Lecturer lecturer;
+
+        if (degree == Degree.DOCTOR) {
+            lecturer = new DoctorLecturer(name, idNumber, degreeName, salary, articles);
+        } else if (degree == Degree.PROFESSOR) {
+            lecturer = new ProfessorLecturer(name, idNumber, degreeName, salary, articles, professorshipBody);
+        } else {
+            lecturer = new Lecturer(name, idNumber, degree, degreeName, salary);
+        }
 
         try {
-            college.addLecturer(name, idNumber, degree, degreeName, salary);
+            college.addLecturer(lecturer);
             System.out.println("Lecturer added successfully.");
         } catch (CollegeActionException e) {
             printActionError(e);
@@ -206,6 +227,17 @@ public class BenFisherRazMazliah {
 
     private static void printActionError(CollegeActionException e) {
         System.out.println("Could not complete action: " + e.getMessage());
+    }
+
+    private static String[] readArticles(Scanner scanner) {
+        int articleCount = readNonNegativeInt(scanner, "Enter number of published articles: ");
+        String[] articles = new String[articleCount];
+
+        for (int i = 0; i < articleCount; i++) {
+            articles[i] = readNonEmptyString(scanner, "Enter article title " + (i + 1) + ": ");
+        }
+
+        return articles;
     }
 
     private static Degree readDegree(Scanner scanner) {

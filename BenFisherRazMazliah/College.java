@@ -55,7 +55,15 @@ public class College {
             throw new CollegeActionException("Lecturer details are not valid.");
         }
 
-        if (findLecturerByName(name) != null || findLecturerById(idNumber) != null) {
+        addLecturer(new Lecturer(name.trim(), idNumber, degree, degreeName.trim(), salary));
+    }
+
+    public void addLecturer(Lecturer lecturer) throws CollegeActionException {
+        if (lecturer == null || isEmpty(lecturer.getName()) || lecturer.getIdNumber() <= 0) {
+            throw new CollegeActionException("Lecturer details are not valid.");
+        }
+
+        if (findLecturerByName(lecturer.getName()) != null || findLecturerById(lecturer.getIdNumber()) != null) {
             throw new CollegeActionException("Lecturer name or ID already exists.");
         }
 
@@ -63,8 +71,8 @@ public class College {
             increaseLecturersArray();
         }
 
-        lecturers[lecturerCount] = new Lecturer(name.trim(), idNumber, degree, degreeName.trim(), salary);
-        lecturerIds[lecturerCount] = idNumber;
+        lecturers[lecturerCount] = lecturer;
+        lecturerIds[lecturerCount] = lecturer.getIdNumber();
         lecturerDepartments[lecturerCount] = null;
 
         lecturerCount++;

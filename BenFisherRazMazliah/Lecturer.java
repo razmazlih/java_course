@@ -25,6 +25,10 @@ public class Lecturer {
         return name;
     }
 
+    public int getIdNumber() {
+        return idNumber;
+    }
+
     public double getSalary() {
         return salary;
     }
