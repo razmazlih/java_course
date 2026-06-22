@@ -136,4 +136,18 @@ public class Lecturer {
                 ", Degree name: " + degreeName +
                 ", Salary: " + salary;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+
+        if (!(other instanceof Lecturer)) {
+            return false;
+        }
+
+        Lecturer otherLecturer = (Lecturer) other;
+        return idNumber == otherLecturer.idNumber;
+    }
 }

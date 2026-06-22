@@ -93,4 +93,23 @@ public class Department {
 
         return sum / lecturerCount;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+
+        if (!(other instanceof Department)) {
+            return false;
+        }
+
+        Department otherDepartment = (Department) other;
+
+        if (name == null) {
+            return otherDepartment.name == null;
+        }
+
+        return name.equalsIgnoreCase(otherDepartment.name);
+    }
 }

@@ -18,4 +18,9 @@ public class ProfessorLecturer extends DoctorLecturer {
         return super.toString() +
                 ", Professorship granted by: " + professorshipBody;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        return super.equals(other);
+    }
 }

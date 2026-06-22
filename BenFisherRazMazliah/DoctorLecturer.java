@@ -55,4 +55,9 @@ public class DoctorLecturer extends Lecturer implements ArticleWriter {
                 ", Articles count: " + articleCount +
                 ", Articles: " + getArticlesDetails();
     }
+
+    @Override
+    public boolean equals(Object other) {
+        return super.equals(other);
+    }
 }

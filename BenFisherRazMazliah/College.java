@@ -488,4 +488,31 @@ public class College {
     private boolean isEmpty(String value) {
         return value == null || value.trim().isEmpty();
     }
+
+    @Override
+    public String toString() {
+        return "College name: " + name +
+                ", Lecturers count: " + lecturerCount +
+                ", Departments count: " + departmentCount +
+                ", Committees count: " + committeeCount;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+
+        if (!(other instanceof College)) {
+            return false;
+        }
+
+        College otherCollege = (College) other;
+
+        if (name == null) {
+            return otherCollege.name == null;
+        }
+
+        return name.equalsIgnoreCase(otherCollege.name);
+    }
 }

@@ -165,4 +165,23 @@ public class Committee {
 
         return result;
     }
+
+    @Override
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
+
+        if (!(other instanceof Committee)) {
+            return false;
+        }
+
+        Committee otherCommittee = (Committee) other;
+
+        if (name == null) {
+            return otherCommittee.name == null;
+        }
+
+        return name.equalsIgnoreCase(otherCommittee.name);
+    }
 }
