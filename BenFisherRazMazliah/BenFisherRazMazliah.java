@@ -98,12 +98,11 @@ public class BenFisherRazMazliah {
         String degreeName = readNonEmptyString(scanner, "Enter degree name: ");
         double salary = readNonNegativeDouble(scanner, "Enter salary: ");
 
-        boolean success = college.addLecturer(name, idNumber, degree, degreeName, salary);
-
-        if (success) {
+        try {
+            college.addLecturer(name, idNumber, degree, degreeName, salary);
             System.out.println("Lecturer added successfully.");
-        } else {
-            System.out.println("Could not add lecturer. Name or ID may already exist.");
+        } catch (CollegeActionException e) {
+            printActionError(e);
         }
     }
 
@@ -116,12 +115,11 @@ public class BenFisherRazMazliah {
 
         String chairmanName = readNonEmptyString(scanner, "Enter chairman lecturer name: ");
 
-        boolean success = college.addCommittee(committeeName, chairmanName);
-
-        if (success) {
+        try {
+            college.addCommittee(committeeName, chairmanName);
             System.out.println("Committee added successfully.");
-        } else {
-            System.out.println("Could not add committee. Check that the committee does not exist and the chairman is a doctor or professor.");
+        } catch (CollegeActionException e) {
+            printActionError(e);
         }
     }
 
@@ -129,12 +127,11 @@ public class BenFisherRazMazliah {
         String lecturerName = readNonEmptyString(scanner, "Enter lecturer name: ");
         String committeeName = readNonEmptyString(scanner, "Enter committee name: ");
 
-        boolean success = college.addLecturerToCommittee(lecturerName, committeeName);
-
-        if (success) {
+        try {
+            college.addLecturerToCommittee(lecturerName, committeeName);
             System.out.println("Lecturer added to committee successfully.");
-        } else {
-            System.out.println("Could not add lecturer to committee. Check that both exist and the lecturer is not the chairman or already a member.");
+        } catch (CollegeActionException e) {
+            printActionError(e);
         }
     }
 
@@ -142,12 +139,11 @@ public class BenFisherRazMazliah {
         String committeeName = readNonEmptyString(scanner, "Enter committee name: ");
         String chairmanName = readNonEmptyString(scanner, "Enter new chairman lecturer name: ");
 
-        boolean success = college.updateCommitteeChairman(committeeName, chairmanName);
-
-        if (success) {
+        try {
+            college.updateCommitteeChairman(committeeName, chairmanName);
             System.out.println("Committee chairman updated successfully.");
-        } else {
-            System.out.println("Could not update chairman. Check that the committee exists and the new chairman is a doctor or professor.");
+        } catch (CollegeActionException e) {
+            printActionError(e);
         }
     }
 
@@ -155,12 +151,11 @@ public class BenFisherRazMazliah {
         String lecturerName = readNonEmptyString(scanner, "Enter lecturer name: ");
         String committeeName = readNonEmptyString(scanner, "Enter committee name: ");
 
-        boolean success = college.removeLecturerFromCommittee(lecturerName, committeeName);
-
-        if (success) {
+        try {
+            college.removeLecturerFromCommittee(lecturerName, committeeName);
             System.out.println("Lecturer removed from committee successfully.");
-        } else {
-            System.out.println("Could not remove lecturer from committee. Check that both exist and the lecturer is a committee member.");
+        } catch (CollegeActionException e) {
+            printActionError(e);
         }
     }
 
@@ -173,12 +168,11 @@ public class BenFisherRazMazliah {
 
         int studentCount = readNonNegativeInt(scanner, "Enter number of students: ");
 
-        boolean success = college.addDepartment(departmentName, studentCount);
-
-        if (success) {
+        try {
+            college.addDepartment(departmentName, studentCount);
             System.out.println("Department added successfully.");
-        } else {
-            System.out.println("Could not add department. Department may already exist.");
+        } catch (CollegeActionException e) {
+            printActionError(e);
         }
     }
 
@@ -186,12 +180,11 @@ public class BenFisherRazMazliah {
         String lecturerName = readNonEmptyString(scanner, "Enter lecturer name: ");
         String departmentName = readNonEmptyString(scanner, "Enter department name: ");
 
-        boolean success = college.addLecturerToDepartment(lecturerName, departmentName);
-
-        if (success) {
+        try {
+            college.addLecturerToDepartment(lecturerName, departmentName);
             System.out.println("Lecturer added to department successfully.");
-        } else {
-            System.out.println("Could not add lecturer to department. Check that both exist and the lecturer is not already assigned to a department.");
+        } catch (CollegeActionException e) {
+            printActionError(e);
         }
     }
 
@@ -209,6 +202,10 @@ public class BenFisherRazMazliah {
         } else {
             System.out.println("Average salary in department: " + String.format("%.2f", average));
         }
+    }
+
+    private static void printActionError(CollegeActionException e) {
+        System.out.println("Could not complete action: " + e.getMessage());
     }
 
     private static Degree readDegree(Scanner scanner) {

@@ -47,13 +47,13 @@ public class Lecturer {
         committees = newCommittees;
     }
 
-    public boolean addCommittee(Committee committee) {
+    public void addCommittee(Committee committee) throws CollegeActionException {
         if (committee == null) {
-            return false;
+            throw new CollegeActionException("Committee does not exist.");
         }
 
         if (hasCommittee(committee)) {
-            return false;
+            throw new CollegeActionException("Lecturer is already assigned to this committee.");
         }
 
         if (committeeCount == committees.length) {
@@ -62,12 +62,11 @@ public class Lecturer {
 
         committees[committeeCount] = committee;
         committeeCount++;
-        return true;
     }
 
-    public boolean removeCommittee(Committee committee) {
+    public void removeCommittee(Committee committee) throws CollegeActionException {
         if (committee == null) {
-            return false;
+            throw new CollegeActionException("Committee does not exist.");
         }
 
         for (int i = 0; i < committeeCount; i++) {
@@ -78,11 +77,11 @@ public class Lecturer {
 
                 committees[committeeCount - 1] = null;
                 committeeCount--;
-                return true;
+                return;
             }
         }
 
-        return false;
+        throw new CollegeActionException("Lecturer is not assigned to this committee.");
     }
 
     public boolean hasCommittee(Committee committee) {

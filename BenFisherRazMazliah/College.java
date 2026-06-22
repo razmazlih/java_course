@@ -49,13 +49,14 @@ public class College {
         return findCommitteeByName(name) != null;
     }
 
-    public boolean addLecturer(String name, int idNumber, Degree degree, String degreeName, double salary) {
+    public void addLecturer(String name, int idNumber, Degree degree, String degreeName, double salary)
+            throws CollegeActionException {
         if (isEmpty(name) || idNumber <= 0 || degree == null || isEmpty(degreeName) || salary < 0) {
-            return false;
+            throw new CollegeActionException("Lecturer details are not valid.");
         }
 
         if (findLecturerByName(name) != null || findLecturerById(idNumber) != null) {
-            return false;
+            throw new CollegeActionException("Lecturer name or ID already exists.");
         }
 
         if (lecturerCount == lecturers.length) {
@@ -67,16 +68,15 @@ public class College {
         lecturerDepartments[lecturerCount] = null;
 
         lecturerCount++;
-        return true;
     }
 
-    public boolean addDepartment(String name, int studentCount) {
+    public void addDepartment(String name, int studentCount) throws CollegeActionException {
         if (isEmpty(name) || studentCount < 0) {
-            return false;
+            throw new CollegeActionException("Department details are not valid.");
         }
 
         if (findDepartmentByName(name) != null) {
-            return false;
+            throw new CollegeActionException("Department already exists.");
         }
 
         if (departmentCount == departments.length) {
@@ -85,23 +85,25 @@ public class College {
 
         departments[departmentCount] = new Department(name.trim(), studentCount);
         departmentCount++;
-
-        return true;
     }
 
-    public boolean addCommittee(String committeeName, String chairmanName) {
+    public void addCommittee(String committeeName, String chairmanName) throws CollegeActionException {
         if (isEmpty(committeeName) || isEmpty(chairmanName)) {
-            return false;
+            throw new CollegeActionException("Committee name and chairman name are required.");
         }
 
         if (findCommitteeByName(committeeName) != null) {
-            return false;
+            throw new CollegeActionException("Committee already exists.");
         }
 
         Lecturer chairman = findLecturerByName(chairmanName);
 
-        if (chairman == null || !chairman.isDoctorOrAbove()) {
-            return false;
+        if (chairman == null) {
+            throw new CollegeActionException("Chairman lecturer does not exist.");
+        }
+
+        if (!chairman.isDoctorOrAbove()) {
+            throw new CollegeActionException("Committee chairman must be a doctor or professor.");
         }
 
         if (committeeCount == committees.length) {
@@ -110,122 +112,117 @@ public class College {
 
         Committee committee = new Committee(committeeName.trim(), chairman);
 
-        if (!chairman.addCommittee(committee)) {
-            return false;
-        }
+        chairman.addCommittee(committee);
 
         committees[committeeCount] = committee;
         committeeCount++;
-
-        return true;
     }
 
-    public boolean addLecturerToDepartment(String lecturerName, String departmentName) {
+    public void addLecturerToDepartment(String lecturerName, String departmentName) throws CollegeActionException {
         int lecturerIndex = findLecturerIndexByName(lecturerName);
         Department department = findDepartmentByName(departmentName);
 
         if (lecturerIndex == -1 || department == null) {
-            return false;
+            throw new CollegeActionException("Lecturer or department does not exist.");
         }
 
         Lecturer lecturer = lecturers[lecturerIndex];
 
         if (lecturer.getDepartment() != null) {
-            return false;
+            throw new CollegeActionException("Lecturer is already assigned to a department.");
         }
 
-        if (!department.addLecturer(lecturer)) {
-            return false;
-        }
-
+        department.addLecturer(lecturer);
         lecturer.setDepartment(department);
         lecturerDepartments[lecturerIndex] = department;
-
-        return true;
     }
 
-    public boolean addLecturerToCommittee(String lecturerName, String committeeName) {
+    public void addLecturerToCommittee(String lecturerName, String committeeName) throws CollegeActionException {
         int lecturerIndex = findLecturerIndexByName(lecturerName);
         Committee committee = findCommitteeByName(committeeName);
 
         if (lecturerIndex == -1 || committee == null) {
-            return false;
+            throw new CollegeActionException("Lecturer or committee does not exist.");
         }
 
         Lecturer lecturer = lecturers[lecturerIndex];
 
-        if (!committee.addMember(lecturer)) {
-            return false;
-        }
+        committee.addMember(lecturer);
 
-        if (!lecturer.addCommittee(committee)) {
-            committee.removeMember(lecturer);
-            return false;
-        }
+        try {
+            lecturer.addCommittee(committee);
+        } catch (CollegeActionException e) {
+            try {
+                committee.removeMember(lecturer);
+            } catch (CollegeActionException rollbackException) {
+            }
 
-        return true;
+            throw e;
+        }
     }
 
-    public boolean removeLecturerFromCommittee(String lecturerName, String committeeName) {
+    public void removeLecturerFromCommittee(String lecturerName, String committeeName) throws CollegeActionException {
         int lecturerIndex = findLecturerIndexByName(lecturerName);
         Committee committee = findCommitteeByName(committeeName);
 
         if (lecturerIndex == -1 || committee == null) {
-            return false;
+            throw new CollegeActionException("Lecturer or committee does not exist.");
         }
 
         Lecturer lecturer = lecturers[lecturerIndex];
 
-        if (!committee.removeMember(lecturer)) {
-            return false;
-        }
+        committee.removeMember(lecturer);
 
-        if (!lecturer.removeCommittee(committee)) {
-            committee.addMember(lecturer);
-            return false;
-        }
+        try {
+            lecturer.removeCommittee(committee);
+        } catch (CollegeActionException e) {
+            try {
+                committee.addMember(lecturer);
+            } catch (CollegeActionException rollbackException) {
+            }
 
-        return true;
+            throw e;
+        }
     }
 
-    public boolean updateCommitteeChairman(String committeeName, String chairmanName) {
+    public void updateCommitteeChairman(String committeeName, String chairmanName) throws CollegeActionException {
         Committee committee = findCommitteeByName(committeeName);
         int chairmanIndex = findLecturerIndexByName(chairmanName);
 
         if (committee == null || chairmanIndex == -1) {
-            return false;
+            throw new CollegeActionException("Committee or chairman lecturer does not exist.");
         }
 
         Lecturer chairman = lecturers[chairmanIndex];
 
         if (!chairman.isDoctorOrAbove()) {
-            return false;
+            throw new CollegeActionException("Committee chairman must be a doctor or professor.");
         }
 
         Lecturer oldChairman = committee.getChairman();
         boolean addedCommitteeToNewChairman = false;
 
         if (!chairman.hasCommittee(committee)) {
-            if (!chairman.addCommittee(committee)) {
-                return false;
-            }
-
+            chairman.addCommittee(committee);
             addedCommitteeToNewChairman = true;
         }
 
-        if (!committee.setChairman(chairman)) {
+        try {
+            committee.setChairman(chairman);
+        } catch (CollegeActionException e) {
             if (addedCommitteeToNewChairman) {
-                chairman.removeCommittee(committee);
+                try {
+                    chairman.removeCommittee(committee);
+                } catch (CollegeActionException rollbackException) {
+                }
             }
 
-            return false;
+            throw e;
         }
 
-        if (oldChairman != chairman && !committee.hasMember(oldChairman)) {
+        if (oldChairman != chairman && !committee.hasMember(oldChairman) && oldChairman.hasCommittee(committee)) {
             oldChairman.removeCommittee(committee);
         }
-
-        return true;
     }
 
     public double getAverageSalary() {

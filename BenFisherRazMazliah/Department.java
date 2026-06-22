@@ -27,14 +27,14 @@ public class Department {
         lecturers = newLecturers;
     }
 
-    public boolean addLecturer(Lecturer lecturer) {
+    public void addLecturer(Lecturer lecturer) throws CollegeActionException {
         if (lecturer == null) {
-            return false;
+            throw new CollegeActionException("Lecturer does not exist.");
         }
 
         for (int i = 0; i < lecturerCount; i++) {
             if (lecturers[i] == lecturer) {
-                return false;
+                throw new CollegeActionException("Lecturer is already assigned to this department.");
             }
         }
 
@@ -44,12 +44,11 @@ public class Department {
 
         lecturers[lecturerCount] = lecturer;
         lecturerCount++;
-        return true;
     }
 
-    public boolean removeLecturer(Lecturer lecturer) {
+    public void removeLecturer(Lecturer lecturer) throws CollegeActionException {
         if (lecturer == null) {
-            return false;
+            throw new CollegeActionException("Lecturer does not exist.");
         }
 
         for (int i = 0; i < lecturerCount; i++) {
@@ -60,11 +59,11 @@ public class Department {
 
                 lecturers[lecturerCount - 1] = null;
                 lecturerCount--;
-                return true;
+                return;
             }
         }
         
-        return false;
+        throw new CollegeActionException("Lecturer is not assigned to this department.");
     }
 
     @Override

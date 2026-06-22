@@ -6,7 +6,7 @@ public class Committee {
     private Lecturer[] members;
     private int memberCount;
 
-    public Committee(String name, Lecturer chairman) {
+    public Committee(String name, Lecturer chairman) throws CollegeActionException {
         this.name = name;
         this.members = new Lecturer[2];
         this.memberCount = 0;
@@ -32,18 +32,18 @@ public class Committee {
         members = newMembers;
     }
 
-    public boolean addMember(Lecturer lecturer) {
+    public void addMember(Lecturer lecturer) throws CollegeActionException {
         if (lecturer == null) {
-            return false;
+            throw new CollegeActionException("Lecturer does not exist.");
         }
 
         if (lecturer == chairman) {
-            return false;
+            throw new CollegeActionException("The chairman is already part of the committee.");
         }
 
         for (int i = 0; i < memberCount; i++) {
             if (members[i] == lecturer) {
-                return false;
+                throw new CollegeActionException("Lecturer is already a committee member.");
             }
         }
 
@@ -53,12 +53,11 @@ public class Committee {
 
         members[memberCount] = lecturer;
         memberCount++;
-        return true;
     }
 
-    public boolean removeMember(Lecturer lecturer) {
+    public void removeMember(Lecturer lecturer) throws CollegeActionException {
         if (lecturer == null) {
-            return false;
+            throw new CollegeActionException("Lecturer does not exist.");
         }
 
         for (int i = 0; i < memberCount; i++) {
@@ -69,11 +68,11 @@ public class Committee {
 
                 members[memberCount - 1] = null;
                 memberCount--;
-                return true;
+                return;
             }
         }
 
-        return false;
+        throw new CollegeActionException("Lecturer is not a committee member.");
     }
 
     public boolean hasMember(Lecturer lecturer) {
@@ -90,18 +89,20 @@ public class Committee {
         return false;
     }
 
-    public boolean setChairman(Lecturer chairman) {
+    public void setChairman(Lecturer chairman) throws CollegeActionException {
         if (chairman == null) {
-            return false;
+            throw new CollegeActionException("Chairman lecturer does not exist.");
         }
 
         if (!chairman.isDoctorOrAbove()) {
-            return false;
+            throw new CollegeActionException("Committee chairman must be a doctor or professor.");
         }
 
-        removeMember(chairman);
+        if (hasMember(chairman)) {
+            removeMember(chairman);
+        }
+
         this.chairman = chairman;
-        return true;
     }
 
     @Override
