@@ -62,6 +62,9 @@ public class BenFisherRazMazliah {
                     case 13:
                         compareCommittees(scanner, college);
                         break;
+                    case 14:
+                        cloneCommittee(scanner, college);
+                        break;
                     default:
                         System.out.println("Invalid choice. Please try again.");
                 }
@@ -87,6 +90,7 @@ public class BenFisherRazMazliah {
         System.out.println("11 - Show all committees");
         System.out.println("12 - Compare two doctors/professors by article count");
         System.out.println("13 - Compare two committees");
+        System.out.println("14 - Clone/copy committee data");
     }
 
     private static void addLecturer(Scanner scanner, College college) {
@@ -267,6 +271,17 @@ public class BenFisherRazMazliah {
             }
 
             printComparisonResult(firstName, firstValue, secondName, secondValue, criterionName);
+        } catch (CollegeActionException e) {
+            printActionError(e);
+        }
+    }
+
+    private static void cloneCommittee(Scanner scanner, College college) {
+        String originalName = readNonEmptyString(scanner, "Enter original committee name: ");
+
+        try {
+            college.cloneCommittee(originalName);
+            System.out.println("Committee cloned successfully as new-" + originalName + ".");
         } catch (CollegeActionException e) {
             printActionError(e);
         }

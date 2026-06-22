@@ -233,6 +233,55 @@ public class College {
         }
     }
 
+    public void cloneCommittee(String originalCommitteeName) throws CollegeActionException {
+        Committee originalCommittee = findCommitteeByName(originalCommitteeName);
+
+        if (originalCommittee == null) {
+            throw new CollegeActionException("Original committee does not exist.");
+        }
+
+        String newCommitteeName = "new-" + originalCommittee.getName();
+
+        if (findCommitteeByName(newCommitteeName) != null) {
+            throw new CollegeActionException("Committee " + newCommitteeName + " already exists.");
+        }
+
+        if (committeeCount == committees.length) {
+            increaseCommitteesArray();
+        }
+
+        Committee newCommittee = new Committee(newCommitteeName, originalCommittee.getChairman());
+        Lecturer[] lecturersAddedToNewCommittee = new Lecturer[originalCommittee.getMemberCount() + 1];
+        int lecturersAddedCount = 0;
+
+        try {
+            Lecturer chairman = originalCommittee.getChairman();
+            chairman.addCommittee(newCommittee);
+            lecturersAddedToNewCommittee[lecturersAddedCount] = chairman;
+            lecturersAddedCount++;
+
+            for (int i = 0; i < originalCommittee.getMemberCount(); i++) {
+                Lecturer member = originalCommittee.getMember(i);
+                newCommittee.addMember(member);
+                member.addCommittee(newCommittee);
+                lecturersAddedToNewCommittee[lecturersAddedCount] = member;
+                lecturersAddedCount++;
+            }
+        } catch (CollegeActionException e) {
+            for (int i = 0; i < lecturersAddedCount; i++) {
+                try {
+                    lecturersAddedToNewCommittee[i].removeCommittee(newCommittee);
+                } catch (CollegeActionException rollbackException) {
+                }
+            }
+
+            throw e;
+        }
+
+        committees[committeeCount] = newCommittee;
+        committeeCount++;
+    }
+
     public double getAverageSalary() {
         if (lecturerCount == 0) {
             return 0;

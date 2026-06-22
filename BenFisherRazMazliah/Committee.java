@@ -21,6 +21,18 @@ public class Committee {
         return chairman;
     }
 
+    public int getMemberCount() {
+        return memberCount;
+    }
+
+    public Lecturer getMember(int index) {
+        if (index < 0 || index >= memberCount) {
+            return null;
+        }
+
+        return members[index];
+    }
+
 
     private void increaseMembersArray() {
         Lecturer[] newMembers = new Lecturer[members.length * 2];
