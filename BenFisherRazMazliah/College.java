@@ -257,6 +257,41 @@ public class College {
         return department.getAverageSalary();
     }
 
+    public int getArticleCountForLecturer(String lecturerName) throws CollegeActionException {
+        Lecturer lecturer = findLecturerByName(lecturerName);
+
+        if (lecturer == null) {
+            throw new CollegeActionException("Lecturer does not exist.");
+        }
+
+        if (!(lecturer instanceof ArticleWriter)) {
+            throw new CollegeActionException("Lecturer is not a doctor or professor.");
+        }
+
+        ArticleWriter writer = (ArticleWriter) lecturer;
+        return writer.getArticleCount();
+    }
+
+    public int getCommitteeStaffCount(String committeeName) throws CollegeActionException {
+        Committee committee = findCommitteeByName(committeeName);
+
+        if (committee == null) {
+            throw new CollegeActionException("Committee does not exist.");
+        }
+
+        return committee.getStaffCount();
+    }
+
+    public int getCommitteeTotalArticleCount(String committeeName) throws CollegeActionException {
+        Committee committee = findCommitteeByName(committeeName);
+
+        if (committee == null) {
+            throw new CollegeActionException("Committee does not exist.");
+        }
+
+        return committee.getTotalArticleCount();
+    }
+
     public String getAllLecturersDetails() {
         if (lecturerCount == 0) {
             return "No lecturers to display.";

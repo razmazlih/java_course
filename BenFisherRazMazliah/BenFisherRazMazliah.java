@@ -56,6 +56,12 @@ public class BenFisherRazMazliah {
                     case 11:
                         System.out.println(college.getAllCommitteesDetails());
                         break;
+                    case 12:
+                        compareLecturerArticles(scanner, college);
+                        break;
+                    case 13:
+                        compareCommittees(scanner, college);
+                        break;
                     default:
                         System.out.println("Invalid choice. Please try again.");
                 }
@@ -79,6 +85,8 @@ public class BenFisherRazMazliah {
         System.out.println("9 - Show average salary of lecturers in a specific department");
         System.out.println("10 - Show all lecturers");
         System.out.println("11 - Show all committees");
+        System.out.println("12 - Compare two doctors/professors by article count");
+        System.out.println("13 - Compare two committees");
     }
 
     private static void addLecturer(Scanner scanner, College college) {
@@ -222,6 +230,75 @@ public class BenFisherRazMazliah {
             System.out.println("Department does not exist.");
         } else {
             System.out.println("Average salary in department: " + String.format("%.2f", average));
+        }
+    }
+
+    private static void compareLecturerArticles(Scanner scanner, College college) {
+        String firstName = readNonEmptyString(scanner, "Enter first lecturer name: ");
+        String secondName = readNonEmptyString(scanner, "Enter second lecturer name: ");
+
+        try {
+            int firstCount = college.getArticleCountForLecturer(firstName);
+            int secondCount = college.getArticleCountForLecturer(secondName);
+            printComparisonResult(firstName, firstCount, secondName, secondCount, "articles");
+        } catch (CollegeActionException e) {
+            printActionError(e);
+        }
+    }
+
+    private static void compareCommittees(Scanner scanner, College college) {
+        String firstName = readNonEmptyString(scanner, "Enter first committee name: ");
+        String secondName = readNonEmptyString(scanner, "Enter second committee name: ");
+        int criterion = readCommitteeComparisonCriterion(scanner);
+
+        try {
+            int firstValue;
+            int secondValue;
+            String criterionName;
+
+            if (criterion == 1) {
+                firstValue = college.getCommitteeStaffCount(firstName);
+                secondValue = college.getCommitteeStaffCount(secondName);
+                criterionName = "staff members";
+            } else {
+                firstValue = college.getCommitteeTotalArticleCount(firstName);
+                secondValue = college.getCommitteeTotalArticleCount(secondName);
+                criterionName = "articles";
+            }
+
+            printComparisonResult(firstName, firstValue, secondName, secondValue, criterionName);
+        } catch (CollegeActionException e) {
+            printActionError(e);
+        }
+    }
+
+    private static int readCommitteeComparisonCriterion(Scanner scanner) {
+        while (true) {
+            System.out.println("Choose comparison criterion:");
+            System.out.println("1 - By number of staff assigned to the committee");
+            System.out.println("2 - By total number of articles written by the committee staff");
+
+            int criterion = readInt(scanner, "Enter criterion number: ");
+
+            if (criterion == 1 || criterion == 2) {
+                return criterion;
+            }
+
+            System.out.println("Invalid criterion. Please try again.");
+        }
+    }
+
+    private static void printComparisonResult(String firstName, int firstValue, String secondName, int secondValue,
+            String criterionName) {
+        if (firstValue > secondValue) {
+            System.out.println(firstName + " has more " + criterionName + " (" + firstValue + " vs "
+                    + secondValue + ").");
+        } else if (secondValue > firstValue) {
+            System.out.println(secondName + " has more " + criterionName + " (" + secondValue + " vs "
+                    + firstValue + ").");
+        } else {
+            System.out.println(firstName + " and " + secondName + " are equal by " + criterionName + " ("
+                    + firstValue + ").");
         }
     }
 

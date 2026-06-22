@@ -89,6 +89,41 @@ public class Committee {
         return false;
     }
 
+    public int getStaffCount() {
+        int count = memberCount;
+
+        if (chairman != null && !hasMember(chairman)) {
+            count++;
+        }
+
+        return count;
+    }
+
+    public int getTotalArticleCount() {
+        int total = 0;
+
+        if (chairman != null) {
+            total += getArticleCount(chairman);
+        }
+
+        for (int i = 0; i < memberCount; i++) {
+            if (members[i] != chairman) {
+                total += getArticleCount(members[i]);
+            }
+        }
+
+        return total;
+    }
+
+    private int getArticleCount(Lecturer lecturer) {
+        if (lecturer instanceof ArticleWriter) {
+            ArticleWriter writer = (ArticleWriter) lecturer;
+            return writer.getArticleCount();
+        }
+
+        return 0;
+    }
+
     public void setChairman(Lecturer chairman) throws CollegeActionException {
         if (chairman == null) {
             throw new CollegeActionException("Chairman lecturer does not exist.");
