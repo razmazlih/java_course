@@ -1,14 +1,18 @@
 package ben_fisher_raz_matzliach;
 
-public class Lecturer {
+import java.util.ArrayList;
+import java.io.Serializable;
+
+public class Lecturer implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private final String name;
     private final int idNumber;
     private final Degree degree;
     private final String degreeName;
     private final double salary;
     private Department department;
-    private Committee[] committees;
-    private int committeeCount;
+    private ArrayList<Committee> committees;
 
     public Lecturer(String name, int idNumber, Degree degree, String degreeName, double salary) {
         this.name = name;
@@ -17,10 +21,9 @@ public class Lecturer {
         this.degreeName = degreeName;
         this.salary = salary;
         this.department = null;
-        this.committees = new Committee[2];
-        this.committeeCount = 0;
+        this.committees = new ArrayList<Committee>();
     }
-    
+
     public String getName() {
         return name;
     }
@@ -41,16 +44,6 @@ public class Lecturer {
         return department;
     }
 
-    private void increaseCommitteesArray() {
-        Committee[] newCommittees = new Committee[committees.length * 2];
-
-        for (int i = 0; i < committeeCount; i++) {
-            newCommittees[i] = committees[i];
-        }
-
-        committees = newCommittees;
-    }
-
     public void addCommittee(Committee committee) throws CollegeActionException {
         if (committee == null) {
             throw new CollegeActionException("Committee does not exist.");
@@ -60,12 +53,7 @@ public class Lecturer {
             throw new CollegeActionException("Lecturer is already assigned to this committee.");
         }
 
-        if (committeeCount == committees.length) {
-            increaseCommitteesArray();
-        }
-
-        committees[committeeCount] = committee;
-        committeeCount++;
+        committees.add(committee);
     }
 
     public void removeCommittee(Committee committee) throws CollegeActionException {
@@ -73,19 +61,9 @@ public class Lecturer {
             throw new CollegeActionException("Committee does not exist.");
         }
 
-        for (int i = 0; i < committeeCount; i++) {
-            if (committees[i] == committee) {
-                for (int j = i; j < committeeCount - 1; j++) {
-                    committees[j] = committees[j + 1];
-                }
-
-                committees[committeeCount - 1] = null;
-                committeeCount--;
-                return;
-            }
+        if (!committees.remove(committee)) {
+            throw new CollegeActionException("Lecturer is not assigned to this committee.");
         }
-
-        throw new CollegeActionException("Lecturer is not assigned to this committee.");
     }
 
     public boolean hasCommittee(Committee committee) {
@@ -93,30 +71,24 @@ public class Lecturer {
             return false;
         }
 
-        for (int i = 0; i < committeeCount; i++) {
-            if (committees[i] == committee) {
-                return true;
-            }
-        }
-
-        return false;
+        return committees.contains(committee);
     }
 
     public String getCommitteeNames() {
-        if (committeeCount == 0) {
+        if (committees.isEmpty()) {
             return "No committees";
         }
 
         String result = "";
 
-        for (int i = 0; i < committeeCount; i++) {
+        for (int i = 0; i < committees.size(); i++) {
             if (i > 0) {
                 result += ", ";
             }
 
-            result += committees[i].getName();
+            result += committees.get(i).getName();
 
-            if (committees[i].getChairman() == this) {
+            if (committees.get(i).getChairman() == this) {
                 result += " (chairman)";
             }
         }

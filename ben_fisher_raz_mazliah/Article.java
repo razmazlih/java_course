@@ -1,6 +1,10 @@
 package ben_fisher_raz_matzliach;
 
-public class Article {
+import java.io.Serializable;
+
+public class Article implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private final String title;
 
     public Article(String title) throws CollegeActionException {

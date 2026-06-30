@@ -1,8 +1,12 @@
 package ben_fisher_raz_matzliach;
 
-public class Doctor extends Lecturer implements ArticleWriter {
-    private Article[] articles;
-    private int articleCount;
+import java.util.ArrayList;
+import java.io.Serializable;
+
+public class Doctor extends Lecturer implements ArticleWriter, Serializable {
+    private static final long serialVersionUID = 1L;
+
+    private ArrayList<Article> articles;
 
     public Doctor(String name, int idNumber, String degreeName, double salary, Article[] articles)
             throws CollegeActionException {
@@ -12,8 +16,7 @@ public class Doctor extends Lecturer implements ArticleWriter {
     protected Doctor(String name, int idNumber, Degree degree, String degreeName, double salary,
             Article[] articles) throws CollegeActionException {
         super(name, idNumber, degree, degreeName, salary);
-        this.articles = new Article[2];
-        this.articleCount = 0;
+        this.articles = new ArrayList<Article>();
 
         if (articles != null) {
             for (int i = 0; i < articles.length; i++) {
@@ -22,48 +25,33 @@ public class Doctor extends Lecturer implements ArticleWriter {
         }
     }
 
-    private void increaseArticlesArray() {
-        Article[] newArticles = new Article[articles.length * 2];
-
-        for (int i = 0; i < articleCount; i++) {
-            newArticles[i] = articles[i];
-        }
-
-        articles = newArticles;
-    }
-
     public void addArticle(Article article) throws CollegeActionException {
         if (article == null) {
             throw new CollegeActionException("Article does not exist.");
         }
 
-        if (articleCount == articles.length) {
-            increaseArticlesArray();
-        }
-
-        articles[articleCount] = article;
-        articleCount++;
+        articles.add(article);
     }
 
     @Override
     public int getArticleCount() {
-        return articleCount;
+        return articles.size();
     }
 
     @Override
     public String getArticlesDetails() {
-        if (articleCount == 0) {
+        if (articles.isEmpty()) {
             return "No articles";
         }
 
         String result = "";
 
-        for (int i = 0; i < articleCount; i++) {
+        for (int i = 0; i < articles.size(); i++) {
             if (i > 0) {
                 result += "; ";
             }
 
-            result += (i + 1) + ". " + articles[i];
+            result += (i + 1) + ". " + articles.get(i);
         }
 
         return result;
@@ -72,7 +60,7 @@ public class Doctor extends Lecturer implements ArticleWriter {
     @Override
     public String toString() {
         return super.toString() +
-                ", Articles count: " + articleCount +
+                ", Articles count: " + articles.size() +
                 ", Articles: " + getArticlesDetails();
     }
 

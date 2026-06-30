@@ -1,6 +1,10 @@
 package ben_fisher_raz_matzliach;
 
-public class Professor extends Doctor {
+import java.io.Serializable;
+
+public class Professor extends Doctor implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private final String professorshipBody;
 
     public Professor(String name, int idNumber, String degreeName, double salary, Article[] articles,

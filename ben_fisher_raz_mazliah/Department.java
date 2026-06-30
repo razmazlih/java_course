@@ -1,30 +1,23 @@
 package ben_fisher_raz_matzliach;
 
-public class Department {
+import java.util.ArrayList;
+import java.io.Serializable;
+
+public class Department implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private final String name;
-    private Lecturer[] lecturers;
-    private int lecturerCount;
+    private ArrayList<Lecturer> lecturers;
     private final int studentCount;
 
     public Department(String name, int studentCount) {
         this.name = name;
         this.studentCount = studentCount;
-        this.lecturers = new Lecturer[2];
-        this.lecturerCount = 0;
+        this.lecturers = new ArrayList<Lecturer>();
     }
-    
+
     public String getName() {
         return name;
-    }
-
-    private void increaseLecturersArray() {
-        Lecturer[] newLecturers = new Lecturer[lecturers.length * 2];
-
-        for (int i = 0; i < lecturerCount; i++) {
-            newLecturers[i] = lecturers[i];
-        }
-
-        lecturers = newLecturers;
     }
 
     public void addLecturer(Lecturer lecturer) throws CollegeActionException {
@@ -32,18 +25,11 @@ public class Department {
             throw new CollegeActionException("Lecturer does not exist.");
         }
 
-        for (int i = 0; i < lecturerCount; i++) {
-            if (lecturers[i] == lecturer) {
-                throw new CollegeActionException("Lecturer is already assigned to this department.");
-            }
+        if (lecturers.contains(lecturer)) {
+            throw new CollegeActionException("Lecturer is already assigned to this department.");
         }
 
-        if (lecturerCount == lecturers.length) {
-            increaseLecturersArray();
-        }
-
-        lecturers[lecturerCount] = lecturer;
-        lecturerCount++;
+        lecturers.add(lecturer);
     }
 
     public void removeLecturer(Lecturer lecturer) throws CollegeActionException {
@@ -51,47 +37,37 @@ public class Department {
             throw new CollegeActionException("Lecturer does not exist.");
         }
 
-        for (int i = 0; i < lecturerCount; i++) {
-            if (lecturers[i] == lecturer) {
-                for (int j = i; j < lecturerCount - 1; j++) {
-                    lecturers[j] = lecturers[j + 1];
-                }
-
-                lecturers[lecturerCount - 1] = null;
-                lecturerCount--;
-                return;
-            }
+        if (!lecturers.remove(lecturer)) {
+            throw new CollegeActionException("Lecturer is not assigned to this department.");
         }
-        
-        throw new CollegeActionException("Lecturer is not assigned to this department.");
     }
 
     @Override
     public String toString() {
         String result = "Department name: " + name +
                 ", Students count: " + studentCount +
-                ", Lecturers count: " + lecturerCount +
+                ", Lecturers count: " + lecturers.size() +
                 "\nLecturers:";
 
-        for (int i = 0; i < lecturerCount; i++) {
-            result += "\n" + (i + 1) + ". " + lecturers[i];
+        for (int i = 0; i < lecturers.size(); i++) {
+            result += "\n" + (i + 1) + ". " + lecturers.get(i);
         }
 
         return result;
     }
 
     public double getAverageSalary() {
-        if (lecturerCount == 0) {
+        if (lecturers.isEmpty()) {
             return 0;
         }
 
         double sum = 0;
 
-        for (int i = 0; i < lecturerCount; i++) {
-            sum += lecturers[i].getSalary();
+        for (int i = 0; i < lecturers.size(); i++) {
+            sum += lecturers.get(i).getSalary();
         }
 
-        return sum / lecturerCount;
+        return sum / lecturers.size();
     }
 
     @Override
