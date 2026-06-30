@@ -1,9 +1,10 @@
-# Part 3 - College Staff Management System in Java
+# Part 4 - College Staff Management System in Java
 
 ## 1. Project purpose
 
 This project is a beginner-level Java OOP system for managing college staff, departments, and committees.
-It uses classes, inheritance, interfaces, enums, arrays, custom exceptions, `toString`, and `equals`.
+It uses classes, inheritance, interfaces, enums, ArrayList, Serializable, custom exceptions,
+`toString`, and `equals`.
 
 All user input and screen output are handled only in `Main.java`.
 The other classes contain the system logic and do not use `Scanner` or print to the screen.
@@ -16,7 +17,7 @@ The other classes contain the system logic and do not use `Scanner` or print to 
 ## 3. How to compile
 
 ```bash
-javac -encoding UTF-8 -d out $(find college_exe3 -name "*.java")
+javac -encoding UTF-8 -d out $(find ben_fisher_raz_mazliah -name "*.java")
 ```
 
 ## 4. How to run
@@ -37,7 +38,7 @@ java -cp out ben_fisher_raz_matzliach.Main
 - Show average salary by department.
 - Show all lecturers and all committees.
 
-## 6. New Part 3 features
+## 6. Part 3 features (still working)
 
 - Inheritance for `Doctor` and `Professor`.
 - Article list for doctors and professors.
@@ -50,57 +51,82 @@ java -cp out ben_fisher_raz_matzliach.Main
 - Compare committees by total article count.
 - Clone committee using `new-` prefix.
 - `toString` and `equals` in all classes.
-- Dynamic arrays expand by exactly x2.
-- `marathon_uml_diagram.pdf` class diagram file.
 
-## 7. File structure
+## 7. New Part 4 features
+
+- **ArrayList instead of arrays**: All arrays in `College`, `Committee`, `Department`, `Lecturer`,
+  and `Doctor` replaced with `ArrayList`. No more count fields or manual array doubling.
+- **Binary save and load**: On exit, the system saves all data to `college_data.dat` using
+  `ObjectOutputStream`. On startup, if the file exists, data is loaded with `ObjectInputStream`.
+  If the file is missing or corrupted, the system starts fresh.
+- **Committee homogeneity**: When creating a committee, the user chooses the allowed member type:
+  - `REGULAR` — only regular lecturers (not doctors or professors)
+  - `DOCTOR` — only doctors (not professors, since `Professor extends Doctor`)
+  - `PROFESSOR` — only professors
+  - The chairman is exempt from this restriction but must still be a doctor or professor.
+  - A new custom exception `InvalidCommitteeMemberTypeException` is thrown when the wrong type
+    is added as a regular member.
+- **Serializable**: All model classes implement `Serializable` for binary file storage.
+  New classes/enums: `CommitteeMemberType`, `InvalidCommitteeMemberTypeException`.
+
+## 8. File structure
 
 ```text
-java_course/
+BenFisherRazMazliah/
 |-- README.md
-|-- marathon_uml_diagram.pdf
-`-- college_exe3/
-    `-- ben_fisher_raz_matzliach/
-        |-- AlreadyCommitteeMemberException.java
-        |-- Article.java
-        |-- ArticleWriter.java
-        |-- College.java
-        |-- CollegeActionException.java
-        |-- Committee.java
-        |-- Degree.java
-        |-- Department.java
-        |-- Doctor.java
-        |-- InvalidChairmanException.java
-        |-- Lecturer.java
-        |-- Main.java
-        `-- Professor.java
+|-- mermaid-diagram.pdf
+`-- ben_fisher_raz_mazliah/
+    |-- AlreadyCommitteeMemberException.java
+    |-- Article.java
+    |-- ArticleWriter.java
+    |-- College.java
+    |-- CollegeActionException.java
+    |-- Committee.java
+    |-- CommitteeMemberType.java
+    |-- Degree.java
+    |-- Department.java
+    |-- Doctor.java
+    |-- InvalidChairmanException.java
+    |-- InvalidCommitteeMemberTypeException.java
+    |-- Lecturer.java
+    |-- Main.java
+    `-- Professor.java
 ```
 
-## 8. Manual tests performed
+## 9. Manual tests performed (Part 4)
 
-The program was compiled cleanly and then tested manually through the menu.
-The test included:
+The program was compiled cleanly and tested manually through the menu:
 
-- Adding FIRST and SECOND lecturers.
-- Adding a doctor with 2 articles.
-- Adding a professor with a granting body and 3 articles.
-- Rejecting a FIRST lecturer as committee chairman.
-- Creating a committee with a doctor chairman.
-- Adding a regular member and rejecting the same member a second time.
-- Rejecting an invalid chairman update without changing the old chairman.
-- Updating the chairman to a professor and removing that professor from regular members.
-- Creating two departments and moving a lecturer from the first to the second.
-- Checking general average salary and department average salary.
-- Comparing doctor/professor article counts.
-- Comparing two committees by staff count and total article count.
-- Cloning a committee as `new-<name>` and rejecting a duplicate clone.
-- Showing all lecturers and all committees.
+1. First open without saved file starts empty system.
+2. Adding a FIRST-degree regular lecturer.
+3. Adding a doctor with 2 articles.
+4. Adding a professor with granting body and 3 articles.
+5. Creating a REGULAR committee with doctor chairman — OK.
+6. Trying to add doctor as member to REGULAR committee — rejected with clear message.
+7. Trying to add professor as member to REGULAR committee — rejected with clear message.
+8. Adding regular lecturer as member to REGULAR committee — OK.
+9. Creating a DOCTOR committee.
+10. Trying to add regular lecturer to DOCTOR committee — rejected.
+11. Trying to add professor to DOCTOR committee — rejected.
+12. Adding a doctor as member to DOCTOR committee — OK.
+13. Creating a PROFESSOR committee.
+14. Trying to add regular lecturer to PROFESSOR committee — rejected.
+15. Trying to add doctor (non-professor) to PROFESSOR committee — rejected.
+16. Adding professor as member to PROFESSOR committee — OK.
+17. Chairman can be professor even if committee is REGULAR or DOCTOR type.
+18. Regular lecturer cannot be set as chairman (rejected).
+19. Compare doctor/professor article counts — works.
+20. Compare committees by staff count — works.
+21. Compare committees by total articles — works.
+22. Clone committee with `new-` prefix — works.
+23. Exit saves to `college_data.dat`.
+24. Restarting loads saved data automatically.
 
-## 9. Final submission notes
+## 10. Final submission notes
 
-- Submit the package folder with the Java files only:
-  `college_exe3/ben_fisher_raz_matzliach`.
-- Do not submit `.class`, `out`, `build`, or temporary files.
-- Include `marathon_uml_diagram.pdf`.
+- Submit only the package folder with Java files:
+  `ben_fisher_raz_mazliah/` (all `.java` files).
+- Do **not** submit `.class`, `out`, `build`, or `college_data.dat` files.
+- Include `mermaid-diagram.pdf`.
 - Code must compile before submission.
-- The project avoids `ArrayList`, `HashMap`, collections, streams, generics, reflection, and advanced libraries.
+- `college_data.dat` is generated at runtime and should **not** be submitted.
