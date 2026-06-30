@@ -1,28 +1,48 @@
 package ben_fisher_raz_matzliach;
 
 public class DoctorLecturer extends Lecturer implements ArticleWriter {
-    private final String[] articles;
-    private final int articleCount;
+    private Article[] articles;
+    private int articleCount;
 
-    public DoctorLecturer(String name, int idNumber, String degreeName, double salary, String[] articles) {
+    public DoctorLecturer(String name, int idNumber, String degreeName, double salary, Article[] articles)
+            throws CollegeActionException {
         this(name, idNumber, Degree.DOCTOR, degreeName, salary, articles);
     }
 
-    protected DoctorLecturer(String name, int idNumber, Degree degree, String degreeName, double salary, String[] articles) {
+    protected DoctorLecturer(String name, int idNumber, Degree degree, String degreeName, double salary,
+            Article[] articles) throws CollegeActionException {
         super(name, idNumber, degree, degreeName, salary);
+        this.articles = new Article[2];
+        this.articleCount = 0;
 
-        if (articles == null) {
-            this.articles = new String[0];
-            this.articleCount = 0;
-        } else {
-            this.articles = new String[articles.length];
-
+        if (articles != null) {
             for (int i = 0; i < articles.length; i++) {
-                this.articles[i] = articles[i];
+                addArticle(articles[i]);
             }
-
-            this.articleCount = articles.length;
         }
+    }
+
+    private void increaseArticlesArray() {
+        Article[] newArticles = new Article[articles.length * 2];
+
+        for (int i = 0; i < articleCount; i++) {
+            newArticles[i] = articles[i];
+        }
+
+        articles = newArticles;
+    }
+
+    public void addArticle(Article article) throws CollegeActionException {
+        if (article == null) {
+            throw new CollegeActionException("Article does not exist.");
+        }
+
+        if (articleCount == articles.length) {
+            increaseArticlesArray();
+        }
+
+        articles[articleCount] = article;
+        articleCount++;
     }
 
     @Override

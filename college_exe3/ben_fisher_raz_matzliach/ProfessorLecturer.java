@@ -3,8 +3,8 @@ package ben_fisher_raz_matzliach;
 public class ProfessorLecturer extends DoctorLecturer {
     private final String professorshipBody;
 
-    public ProfessorLecturer(String name, int idNumber, String degreeName, double salary, String[] articles,
-            String professorshipBody) {
+    public ProfessorLecturer(String name, int idNumber, String degreeName, double salary, Article[] articles,
+            String professorshipBody) throws CollegeActionException {
         super(name, idNumber, Degree.PROFESSOR, degreeName, salary, articles);
         this.professorshipBody = professorshipBody;
     }

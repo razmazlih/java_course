@@ -128,6 +128,10 @@ public class Lecturer {
         return degree.isDoctorOrAbove();
     }
 
+    public int getArticleCount() {
+        return 0;
+    }
+
     @Override
     public String toString() {
         return "Name: " + name +

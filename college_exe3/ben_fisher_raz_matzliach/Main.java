@@ -107,7 +107,7 @@ public class Main {
         }
 
         Degree degree = readDegree(scanner);
-        String[] articles = new String[0];
+        Article[] articles = new Article[0];
         String professorshipBody = "";
 
         if (degree == Degree.DOCTOR || degree == Degree.PROFESSOR) {
@@ -123,17 +123,24 @@ public class Main {
         double salary = readNonNegativeDouble(scanner, "Enter salary: ");
         Lecturer lecturer;
 
-        if (degree == Degree.DOCTOR) {
-            lecturer = new DoctorLecturer(name, idNumber, degreeName, salary, articles);
-        } else if (degree == Degree.PROFESSOR) {
-            lecturer = new ProfessorLecturer(name, idNumber, degreeName, salary, articles, professorshipBody);
-        } else {
-            lecturer = new Lecturer(name, idNumber, degree, degreeName, salary);
+        try {
+            if (degree == Degree.DOCTOR) {
+                lecturer = new DoctorLecturer(name, idNumber, degreeName, salary, articles);
+            } else if (degree == Degree.PROFESSOR) {
+                lecturer = new ProfessorLecturer(name, idNumber, degreeName, salary, articles, professorshipBody);
+            } else {
+                lecturer = new Lecturer(name, idNumber, degree, degreeName, salary);
+            }
+        } catch (CollegeActionException e) {
+            printActionError(e);
+            return;
         }
 
         try {
             college.addLecturer(lecturer);
             System.out.println("Lecturer added successfully.");
+        } catch (InvalidChairmanException e) {
+            printActionError(e);
         } catch (CollegeActionException e) {
             printActionError(e);
         }
@@ -151,6 +158,8 @@ public class Main {
         try {
             college.addCommittee(committeeName, chairmanName);
             System.out.println("Committee added successfully.");
+        } catch (AlreadyCommitteeMemberException e) {
+            printActionError(e);
         } catch (CollegeActionException e) {
             printActionError(e);
         }
@@ -163,6 +172,8 @@ public class Main {
         try {
             college.addLecturerToCommittee(lecturerName, committeeName);
             System.out.println("Lecturer added to committee successfully.");
+        } catch (InvalidChairmanException e) {
+            printActionError(e);
         } catch (CollegeActionException e) {
             printActionError(e);
         }
@@ -321,12 +332,19 @@ public class Main {
         System.out.println("Could not complete action: " + e.getMessage());
     }
 
-    private static String[] readArticles(Scanner scanner) {
+    private static Article[] readArticles(Scanner scanner) {
         int articleCount = readNonNegativeInt(scanner, "Enter number of published articles: ");
-        String[] articles = new String[articleCount];
+        Article[] articles = new Article[articleCount];
 
         for (int i = 0; i < articleCount; i++) {
-            articles[i] = readNonEmptyString(scanner, "Enter article title " + (i + 1) + ": ");
+            String title = readNonEmptyString(scanner, "Enter article title " + (i + 1) + ": ");
+
+            try {
+                articles[i] = new Article(title);
+            } catch (CollegeActionException e) {
+                System.out.println(e.getMessage());
+                i--;
+            }
         }
 
         return articles;

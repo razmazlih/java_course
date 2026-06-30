@@ -50,12 +50,12 @@ public class Committee {
         }
 
         if (lecturer == chairman) {
-            throw new CollegeActionException("The chairman is already part of the committee.");
+            throw new AlreadyCommitteeMemberException("The chairman cannot also be a regular committee member.");
         }
 
         for (int i = 0; i < memberCount; i++) {
             if (members[i] == lecturer) {
-                throw new CollegeActionException("Lecturer is already a committee member.");
+                throw new AlreadyCommitteeMemberException("Lecturer is already a committee member.");
             }
         }
 
@@ -136,17 +136,13 @@ public class Committee {
         return 0;
     }
 
-    public void setChairman(Lecturer chairman) throws CollegeActionException {
+    public void setChairman(Lecturer chairman) throws InvalidChairmanException {
         if (chairman == null) {
-            throw new CollegeActionException("Chairman lecturer does not exist.");
+            throw new InvalidChairmanException("Chairman lecturer does not exist.");
         }
 
         if (!chairman.isDoctorOrAbove()) {
-            throw new CollegeActionException("Committee chairman must be a doctor or professor.");
-        }
-
-        if (hasMember(chairman)) {
-            removeMember(chairman);
+            throw new InvalidChairmanException("Committee chairman must be a doctor or professor.");
         }
 
         this.chairman = chairman;
