@@ -110,10 +110,6 @@ public class College {
             throw new CollegeActionException("Chairman lecturer does not exist.");
         }
 
-        if (!chairman.isDoctorOrAbove()) {
-            throw new CollegeActionException("Committee chairman must be a doctor or professor.");
-        }
-
         if (committeeCount == committees.length) {
             increaseCommitteesArray();
         }
@@ -202,22 +198,27 @@ public class College {
         }
 
         Lecturer chairman = lecturers[chairmanIndex];
-
-        if (!chairman.isDoctorOrAbove()) {
-            throw new CollegeActionException("Committee chairman must be a doctor or professor.");
-        }
-
         Lecturer oldChairman = committee.getChairman();
+        boolean wasRegularMember = committee.hasMember(chairman);
         boolean addedCommitteeToNewChairman = false;
-
-        if (!chairman.hasCommittee(committee)) {
-            chairman.addCommittee(committee);
-            addedCommitteeToNewChairman = true;
-        }
 
         try {
             committee.setChairman(chairman);
+
+            if (!chairman.hasCommittee(committee)) {
+                chairman.addCommittee(committee);
+                addedCommitteeToNewChairman = true;
+            }
+
+            if (wasRegularMember) {
+                committee.removeMember(chairman);
+            }
         } catch (CollegeActionException e) {
+            try {
+                committee.setChairman(oldChairman);
+            } catch (InvalidChairmanException rollbackException) {
+            }
+
             if (addedCommitteeToNewChairman) {
                 try {
                     chairman.removeCommittee(committee);
