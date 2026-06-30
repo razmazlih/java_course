@@ -5,12 +5,26 @@
 package ben_fisher_raz_matzliach;
 
 import java.util.Scanner;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.IOException;
 
 public class Main {
+    private static final String DATA_FILE = "college_data.dat";
+
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
-            String collegeName = readNonEmptyString(scanner, "Enter college name: ");
-            College college = new College(collegeName);
+            College college = loadCollege();
+
+            if (college == null) {
+                String collegeName = readNonEmptyString(scanner, "Enter college name: ");
+                college = new College(collegeName);
+            } else {
+                System.out.println("Loaded saved data for college: " + college.getName());
+            }
 
             boolean running = true;
 
@@ -21,7 +35,8 @@ public class Main {
                 switch (choice) {
                     case 0:
                         running = false;
-                        System.out.println("Exiting program.");
+                        saveCollege(college);
+                        System.out.println("Data saved. Exiting program.");
                         break;
                     case 1:
                         addLecturer(scanner, college);
@@ -71,6 +86,41 @@ public class Main {
 
                 System.out.println();
             }
+        }
+    }
+
+    private static College loadCollege() {
+        File file = new File(DATA_FILE);
+
+        if (!file.exists()) {
+            return null;
+        }
+
+        try {
+            FileInputStream fis = new FileInputStream(file);
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            College college = (College) ois.readObject();
+            ois.close();
+            fis.close();
+            return college;
+        } catch (IOException e) {
+            System.out.println("Could not load saved data. Starting with empty system.");
+            return null;
+        } catch (ClassNotFoundException e) {
+            System.out.println("Could not load saved data (class mismatch). Starting with empty system.");
+            return null;
+        }
+    }
+
+    private static void saveCollege(College college) {
+        try {
+            FileOutputStream fos = new FileOutputStream(DATA_FILE);
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(college);
+            oos.close();
+            fos.close();
+        } catch (IOException e) {
+            System.out.println("Could not save data: " + e.getMessage());
         }
     }
 
@@ -155,13 +205,37 @@ public class Main {
 
         String chairmanName = readNonEmptyString(scanner, "Enter chairman lecturer name: ");
 
+        CommitteeMemberType memberType = readCommitteeMemberType(scanner);
+
         try {
-            college.addCommittee(committeeName, chairmanName);
+            college.addCommittee(committeeName, chairmanName, memberType);
             System.out.println("Committee added successfully.");
         } catch (AlreadyCommitteeMemberException e) {
             printActionError(e);
         } catch (CollegeActionException e) {
             printActionError(e);
+        }
+    }
+
+    private static CommitteeMemberType readCommitteeMemberType(Scanner scanner) {
+        while (true) {
+            System.out.println("Choose allowed member type for this committee:");
+            System.out.println("1 - Regular lecturers (first or second degree)");
+            System.out.println("2 - Doctors");
+            System.out.println("3 - Professors");
+
+            int choice = readInt(scanner, "Enter member type: ");
+
+            switch (choice) {
+                case 1:
+                    return CommitteeMemberType.REGULAR;
+                case 2:
+                    return CommitteeMemberType.DOCTOR;
+                case 3:
+                    return CommitteeMemberType.PROFESSOR;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
         }
     }
 
@@ -172,6 +246,8 @@ public class Main {
         try {
             college.addLecturerToCommittee(lecturerName, committeeName);
             System.out.println("Lecturer added to committee successfully.");
+        } catch (InvalidCommitteeMemberTypeException e) {
+            System.out.println("Could not add lecturer: " + e.getMessage());
         } catch (InvalidChairmanException e) {
             printActionError(e);
         } catch (CollegeActionException e) {
