@@ -131,14 +131,34 @@ public class College {
         }
 
         Lecturer lecturer = lecturers[lecturerIndex];
+        Department currentDepartment = lecturer.getDepartment();
 
-        if (lecturer.getDepartment() != null) {
-            throw new CollegeActionException("Lecturer is already assigned to a department.");
+        if (currentDepartment == department) {
+            throw new CollegeActionException("Lecturer is already assigned to this department.");
         }
 
-        department.addLecturer(lecturer);
-        lecturer.setDepartment(department);
-        lecturerDepartments[lecturerIndex] = department;
+        if (currentDepartment != null) {
+            currentDepartment.removeLecturer(lecturer);
+            lecturer.setDepartment(null);
+            lecturerDepartments[lecturerIndex] = null;
+        }
+
+        try {
+            department.addLecturer(lecturer);
+            lecturer.setDepartment(department);
+            lecturerDepartments[lecturerIndex] = department;
+        } catch (CollegeActionException e) {
+            if (currentDepartment != null) {
+                try {
+                    currentDepartment.addLecturer(lecturer);
+                    lecturer.setDepartment(currentDepartment);
+                    lecturerDepartments[lecturerIndex] = currentDepartment;
+                } catch (CollegeActionException rollbackException) {
+                }
+            }
+
+            throw e;
+        }
     }
 
     public void addLecturerToCommittee(String lecturerName, String committeeName) throws CollegeActionException {
