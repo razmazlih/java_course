@@ -4,6 +4,7 @@
 
 package ben_fisher_raz_matzliach;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.io.File;
 import java.io.FileInputStream;
@@ -157,7 +158,7 @@ public class Main {
         }
 
         Degree degree = readDegree(scanner);
-        Article[] articles = new Article[0];
+        ArrayList<Article> articles = new ArrayList<Article>();
         String professorshipBody = "";
 
         if (degree == Degree.PROFESSOR) {
@@ -408,15 +409,15 @@ public class Main {
         System.out.println("Could not complete action: " + e.getMessage());
     }
 
-    private static Article[] readArticles(Scanner scanner) {
+    private static ArrayList<Article> readArticles(Scanner scanner) {
         int articleCount = readNonNegativeInt(scanner, "Enter number of published articles: ");
-        Article[] articles = new Article[articleCount];
+        ArrayList<Article> articles = new ArrayList<Article>();
 
         for (int i = 0; i < articleCount; i++) {
             String title = readNonEmptyString(scanner, "Enter article title " + (i + 1) + ": ");
 
             try {
-                articles[i] = new Article(title);
+                articles.add(new Article(title));
             } catch (CollegeActionException e) {
                 System.out.println(e.getMessage());
                 i--;

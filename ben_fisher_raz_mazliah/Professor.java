@@ -1,5 +1,6 @@
 package ben_fisher_raz_matzliach;
 
+import java.util.ArrayList;
 import java.io.Serializable;
 
 public class Professor extends Doctor implements Serializable {
@@ -7,7 +8,7 @@ public class Professor extends Doctor implements Serializable {
 
     private final String professorshipBody;
 
-    public Professor(String name, int idNumber, String degreeName, double salary, Article[] articles,
+    public Professor(String name, int idNumber, String degreeName, double salary, ArrayList<Article> articles,
             String professorshipBody) throws CollegeActionException {
         super(name, idNumber, Degree.PROFESSOR, degreeName, salary, articles);
         this.professorshipBody = professorshipBody;

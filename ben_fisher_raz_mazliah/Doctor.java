@@ -8,19 +8,19 @@ public class Doctor extends Lecturer implements ArticleWriter, Serializable {
 
     private ArrayList<Article> articles;
 
-    public Doctor(String name, int idNumber, String degreeName, double salary, Article[] articles)
+    public Doctor(String name, int idNumber, String degreeName, double salary, ArrayList<Article> articles)
             throws CollegeActionException {
         this(name, idNumber, Degree.DOCTOR, degreeName, salary, articles);
     }
 
     protected Doctor(String name, int idNumber, Degree degree, String degreeName, double salary,
-            Article[] articles) throws CollegeActionException {
+            ArrayList<Article> articles) throws CollegeActionException {
         super(name, idNumber, degree, degreeName, salary);
         this.articles = new ArrayList<Article>();
 
         if (articles != null) {
-            for (int i = 0; i < articles.length; i++) {
-                addArticle(articles[i]);
+            for (int i = 0; i < articles.size(); i++) {
+                addArticle(articles.get(i));
             }
         }
     }
