@@ -2,7 +2,11 @@
 
 ## 1. Project purpose
 
-This project is a simple Java OOP system for managing college staff, departments, and committees. The main file handles the menu, user input, and printing. The other classes hold the system data and actions.
+This project is a beginner-level Java OOP system for managing college staff, departments, and committees.
+It uses classes, inheritance, interfaces, enums, arrays, custom exceptions, `toString`, and `equals`.
+
+All user input and screen output are handled only in `BenFisherRazMazliah.java`.
+The other classes contain the system logic and do not use `Scanner` or print to the screen.
 
 ## 2. Submitters
 
@@ -39,32 +43,33 @@ java BenFisherRazMazliah.BenFisherRazMazliah
 - Article list for doctors and professors.
 - Professor granting body.
 - Custom exception handling with `CollegeActionException`.
-- Committee chairman must be a doctor or professor.
-- Compare doctors/professors by article count.
+- Chairman must be doctor/professor.
+- Compare doctors/professors by articles.
 - Compare committees by staff count.
 - Compare committees by total article count.
-- Clone committee using the `new-` prefix.
+- Clone committee using `new-` prefix.
 - `toString` and `equals` in all classes.
-- Required `MarathonClassDiagram.pdf`.
+- Dynamic arrays expand by exactly x2.
+- `MarathonClassDiagram.pdf`.
 
 ## 7. File structure
 
 ```text
 java_course/
-├── README.md
-├── MarathonClassDiagram.pdf
-├── MarathonClassDiagram.puml
-└── BenFisherRazMazliah/
-    ├── ArticleWriter.java
-    ├── BenFisherRazMazliah.java
-    ├── College.java
-    ├── CollegeActionException.java
-    ├── Committee.java
-    ├── Degree.java
-    ├── Department.java
-    ├── DoctorLecturer.java
-    ├── Lecturer.java
-    └── ProfessorLecturer.java
+|-- README.md
+|-- MarathonClassDiagram.pdf
+|-- MarathonClassDiagram.puml
+`-- BenFisherRazMazliah/
+    |-- ArticleWriter.java
+    |-- BenFisherRazMazliah.java
+    |-- College.java
+    |-- CollegeActionException.java
+    |-- Committee.java
+    |-- Degree.java
+    |-- Department.java
+    |-- DoctorLecturer.java
+    |-- Lecturer.java
+    `-- ProfessorLecturer.java
 ```
 
 ## 8. Final submission notes
@@ -72,3 +77,4 @@ java_course/
 - Submit Java files only, not `.class` files.
 - Include `MarathonClassDiagram.pdf`.
 - Code must compile before submission.
+- The project avoids `ArrayList`, `HashMap`, collections, streams, generics, reflection, and advanced libraries.
