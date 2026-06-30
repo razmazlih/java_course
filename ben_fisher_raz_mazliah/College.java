@@ -1,32 +1,22 @@
 package ben_fisher_raz_matzliach;
 
-public class College {
+import java.util.ArrayList;
+import java.io.Serializable;
+
+public class College implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private final String name;
 
-    private Lecturer[] lecturers;
-    private Department[] departments;
-    private Committee[] committees;
-
-    private Department[] lecturerDepartments;
-    private int[] lecturerIds;
-
-    private int lecturerCount;
-    private int departmentCount;
-    private int committeeCount;
+    private ArrayList<Lecturer> lecturers;
+    private ArrayList<Department> departments;
+    private ArrayList<Committee> committees;
 
     public College(String name) {
         this.name = name;
-
-        this.lecturers = new Lecturer[2];
-        this.departments = new Department[2];
-        this.committees = new Committee[2];
-
-        this.lecturerDepartments = new Department[2];
-        this.lecturerIds = new int[2];
-
-        this.lecturerCount = 0;
-        this.departmentCount = 0;
-        this.committeeCount = 0;
+        this.lecturers = new ArrayList<Lecturer>();
+        this.departments = new ArrayList<Department>();
+        this.committees = new ArrayList<Committee>();
     }
 
     public String getName() {
@@ -67,15 +57,7 @@ public class College {
             throw new CollegeActionException("Lecturer name or ID already exists.");
         }
 
-        if (lecturerCount == lecturers.length) {
-            increaseLecturersArray();
-        }
-
-        lecturers[lecturerCount] = lecturer;
-        lecturerIds[lecturerCount] = lecturer.getIdNumber();
-        lecturerDepartments[lecturerCount] = null;
-
-        lecturerCount++;
+        lecturers.add(lecturer);
     }
 
     public void addDepartment(String name, int studentCount) throws CollegeActionException {
@@ -87,15 +69,11 @@ public class College {
             throw new CollegeActionException("Department already exists.");
         }
 
-        if (departmentCount == departments.length) {
-            increaseDepartmentsArray();
-        }
-
-        departments[departmentCount] = new Department(name.trim(), studentCount);
-        departmentCount++;
+        departments.add(new Department(name.trim(), studentCount));
     }
 
-    public void addCommittee(String committeeName, String chairmanName) throws CollegeActionException {
+    public void addCommittee(String committeeName, String chairmanName, CommitteeMemberType memberType)
+            throws CollegeActionException {
         if (isEmpty(committeeName) || isEmpty(chairmanName)) {
             throw new CollegeActionException("Committee name and chairman name are required.");
         }
@@ -110,27 +88,21 @@ public class College {
             throw new CollegeActionException("Chairman lecturer does not exist.");
         }
 
-        if (committeeCount == committees.length) {
-            increaseCommitteesArray();
-        }
-
-        Committee committee = new Committee(committeeName.trim(), chairman);
+        Committee committee = new Committee(committeeName.trim(), chairman, memberType);
 
         chairman.addCommittee(committee);
 
-        committees[committeeCount] = committee;
-        committeeCount++;
+        committees.add(committee);
     }
 
     public void addLecturerToDepartment(String lecturerName, String departmentName) throws CollegeActionException {
-        int lecturerIndex = findLecturerIndexByName(lecturerName);
+        Lecturer lecturer = findLecturerByName(lecturerName);
         Department department = findDepartmentByName(departmentName);
 
-        if (lecturerIndex == -1 || department == null) {
+        if (lecturer == null || department == null) {
             throw new CollegeActionException("Lecturer or department does not exist.");
         }
 
-        Lecturer lecturer = lecturers[lecturerIndex];
         Department currentDepartment = lecturer.getDepartment();
 
         if (currentDepartment == department) {
@@ -140,19 +112,16 @@ public class College {
         if (currentDepartment != null) {
             currentDepartment.removeLecturer(lecturer);
             lecturer.setDepartment(null);
-            lecturerDepartments[lecturerIndex] = null;
         }
 
         try {
             department.addLecturer(lecturer);
             lecturer.setDepartment(department);
-            lecturerDepartments[lecturerIndex] = department;
         } catch (CollegeActionException e) {
             if (currentDepartment != null) {
                 try {
                     currentDepartment.addLecturer(lecturer);
                     lecturer.setDepartment(currentDepartment);
-                    lecturerDepartments[lecturerIndex] = currentDepartment;
                 } catch (CollegeActionException rollbackException) {
                 }
             }
@@ -162,14 +131,12 @@ public class College {
     }
 
     public void addLecturerToCommittee(String lecturerName, String committeeName) throws CollegeActionException {
-        int lecturerIndex = findLecturerIndexByName(lecturerName);
+        Lecturer lecturer = findLecturerByName(lecturerName);
         Committee committee = findCommitteeByName(committeeName);
 
-        if (lecturerIndex == -1 || committee == null) {
+        if (lecturer == null || committee == null) {
             throw new CollegeActionException("Lecturer or committee does not exist.");
         }
-
-        Lecturer lecturer = lecturers[lecturerIndex];
 
         committee.addMember(lecturer);
 
@@ -186,14 +153,12 @@ public class College {
     }
 
     public void removeLecturerFromCommittee(String lecturerName, String committeeName) throws CollegeActionException {
-        int lecturerIndex = findLecturerIndexByName(lecturerName);
+        Lecturer lecturer = findLecturerByName(lecturerName);
         Committee committee = findCommitteeByName(committeeName);
 
-        if (lecturerIndex == -1 || committee == null) {
+        if (lecturer == null || committee == null) {
             throw new CollegeActionException("Lecturer or committee does not exist.");
         }
-
-        Lecturer lecturer = lecturers[lecturerIndex];
 
         committee.removeMember(lecturer);
 
@@ -211,13 +176,12 @@ public class College {
 
     public void updateCommitteeChairman(String committeeName, String chairmanName) throws CollegeActionException {
         Committee committee = findCommitteeByName(committeeName);
-        int chairmanIndex = findLecturerIndexByName(chairmanName);
+        Lecturer chairman = findLecturerByName(chairmanName);
 
-        if (committee == null || chairmanIndex == -1) {
+        if (committee == null || chairman == null) {
             throw new CollegeActionException("Committee or chairman lecturer does not exist.");
         }
 
-        Lecturer chairman = lecturers[chairmanIndex];
         Lecturer oldChairman = committee.getChairman();
         boolean wasRegularMember = committee.hasMember(chairman);
         boolean addedCommitteeToNewChairman = false;
@@ -267,31 +231,25 @@ public class College {
             throw new CollegeActionException("Committee " + newCommitteeName + " already exists.");
         }
 
-        if (committeeCount == committees.length) {
-            increaseCommitteesArray();
-        }
-
-        Committee newCommittee = new Committee(newCommitteeName, originalCommittee.getChairman());
-        Lecturer[] lecturersAddedToNewCommittee = new Lecturer[originalCommittee.getMemberCount() + 1];
-        int lecturersAddedCount = 0;
+        Committee newCommittee = new Committee(newCommitteeName, originalCommittee.getChairman(),
+                originalCommittee.getAllowedMemberType());
+        ArrayList<Lecturer> lecturersAddedToNewCommittee = new ArrayList<Lecturer>();
 
         try {
             Lecturer chairman = originalCommittee.getChairman();
             chairman.addCommittee(newCommittee);
-            lecturersAddedToNewCommittee[lecturersAddedCount] = chairman;
-            lecturersAddedCount++;
+            lecturersAddedToNewCommittee.add(chairman);
 
             for (int i = 0; i < originalCommittee.getMemberCount(); i++) {
                 Lecturer member = originalCommittee.getMember(i);
                 newCommittee.addMember(member);
                 member.addCommittee(newCommittee);
-                lecturersAddedToNewCommittee[lecturersAddedCount] = member;
-                lecturersAddedCount++;
+                lecturersAddedToNewCommittee.add(member);
             }
         } catch (CollegeActionException e) {
-            for (int i = 0; i < lecturersAddedCount; i++) {
+            for (int i = 0; i < lecturersAddedToNewCommittee.size(); i++) {
                 try {
-                    lecturersAddedToNewCommittee[i].removeCommittee(newCommittee);
+                    lecturersAddedToNewCommittee.get(i).removeCommittee(newCommittee);
                 } catch (CollegeActionException rollbackException) {
                 }
             }
@@ -299,22 +257,21 @@ public class College {
             throw e;
         }
 
-        committees[committeeCount] = newCommittee;
-        committeeCount++;
+        committees.add(newCommittee);
     }
 
     public double getAverageSalary() {
-        if (lecturerCount == 0) {
+        if (lecturers.isEmpty()) {
             return 0;
         }
 
         double sum = 0;
 
-        for (int i = 0; i < lecturerCount; i++) {
-            sum += lecturers[i].getSalary();
+        for (int i = 0; i < lecturers.size(); i++) {
+            sum += lecturers.get(i).getSalary();
         }
 
-        return sum / lecturerCount;
+        return sum / lecturers.size();
     }
 
     public double getDepartmentAverageSalary(String departmentName) {
@@ -363,65 +320,55 @@ public class College {
     }
 
     public String getAllLecturersDetails() {
-        if (lecturerCount == 0) {
+        if (lecturers.isEmpty()) {
             return "No lecturers to display.";
         }
 
         String result = "Lecturers:";
 
-        for (int i = 0; i < lecturerCount; i++) {
-            result += "\n" + (i + 1) + ". " + lecturers[i];
+        for (int i = 0; i < lecturers.size(); i++) {
+            result += "\n" + (i + 1) + ". " + lecturers.get(i);
             result += "\n   Department: " + getDepartmentNameForLecturer(i);
-            result += "\n   Committees: " + lecturers[i].getCommitteeNames();
+            result += "\n   Committees: " + lecturers.get(i).getCommitteeNames();
         }
 
         return result;
     }
 
     public String getAllCommitteesDetails() {
-        if (committeeCount == 0) {
+        if (committees.isEmpty()) {
             return "No committees to display.";
         }
 
         String result = "Committees:";
 
-        for (int i = 0; i < committeeCount; i++) {
-            result += "\n" + (i + 1) + ". " + committees[i];
+        for (int i = 0; i < committees.size(); i++) {
+            result += "\n" + (i + 1) + ". " + committees.get(i);
         }
 
         return result;
     }
 
     private Lecturer findLecturerByName(String name) {
-        int index = findLecturerIndexByName(name);
-
-        if (index == -1) {
-            return null;
-        }
-
-        return lecturers[index];
-    }
-
-    private int findLecturerIndexByName(String name) {
         if (isEmpty(name)) {
-            return -1;
+            return null;
         }
 
         String fixedName = name.trim();
 
-        for (int i = 0; i < lecturerCount; i++) {
-            if (lecturers[i].getName().equalsIgnoreCase(fixedName)) {
-                return i;
+        for (int i = 0; i < lecturers.size(); i++) {
+            if (lecturers.get(i).getName().equalsIgnoreCase(fixedName)) {
+                return lecturers.get(i);
             }
         }
 
-        return -1;
+        return null;
     }
 
     private Lecturer findLecturerById(int idNumber) {
-        for (int i = 0; i < lecturerCount; i++) {
-            if (lecturerIds[i] == idNumber) {
-                return lecturers[i];
+        for (int i = 0; i < lecturers.size(); i++) {
+            if (lecturers.get(i).getIdNumber() == idNumber) {
+                return lecturers.get(i);
             }
         }
 
@@ -435,9 +382,9 @@ public class College {
 
         String fixedName = name.trim();
 
-        for (int i = 0; i < departmentCount; i++) {
-            if (departments[i].getName().equalsIgnoreCase(fixedName)) {
-                return departments[i];
+        for (int i = 0; i < departments.size(); i++) {
+            if (departments.get(i).getName().equalsIgnoreCase(fixedName)) {
+                return departments.get(i);
             }
         }
 
@@ -451,9 +398,9 @@ public class College {
 
         String fixedName = name.trim();
 
-        for (int i = 0; i < committeeCount; i++) {
-            if (committees[i].getName().equalsIgnoreCase(fixedName)) {
-                return committees[i];
+        for (int i = 0; i < committees.size(); i++) {
+            if (committees.get(i).getName().equalsIgnoreCase(fixedName)) {
+                return committees.get(i);
             }
         }
 
@@ -461,49 +408,13 @@ public class College {
     }
 
     private String getDepartmentNameForLecturer(int lecturerIndex) {
-        Department department = lecturers[lecturerIndex].getDepartment();
+        Department department = lecturers.get(lecturerIndex).getDepartment();
 
         if (department == null) {
             return "No department";
         }
 
         return department.getName();
-    }
-
-    private void increaseLecturersArray() {
-        Lecturer[] newLecturers = new Lecturer[lecturers.length * 2];
-        Department[] newLecturerDepartments = new Department[lecturerDepartments.length * 2];
-        int[] newLecturerIds = new int[lecturerIds.length * 2];
-
-        for (int i = 0; i < lecturerCount; i++) {
-            newLecturers[i] = lecturers[i];
-            newLecturerDepartments[i] = lecturerDepartments[i];
-            newLecturerIds[i] = lecturerIds[i];
-        }
-
-        lecturers = newLecturers;
-        lecturerDepartments = newLecturerDepartments;
-        lecturerIds = newLecturerIds;
-    }
-
-    private void increaseDepartmentsArray() {
-        Department[] newDepartments = new Department[departments.length * 2];
-
-        for (int i = 0; i < departmentCount; i++) {
-            newDepartments[i] = departments[i];
-        }
-
-        departments = newDepartments;
-    }
-
-    private void increaseCommitteesArray() {
-        Committee[] newCommittees = new Committee[committees.length * 2];
-
-        for (int i = 0; i < committeeCount; i++) {
-            newCommittees[i] = committees[i];
-        }
-
-        committees = newCommittees;
     }
 
     private boolean isEmpty(String value) {
@@ -513,9 +424,9 @@ public class College {
     @Override
     public String toString() {
         return "College name: " + name +
-                ", Lecturers count: " + lecturerCount +
-                ", Departments count: " + departmentCount +
-                ", Committees count: " + committeeCount;
+                ", Lecturers count: " + lecturers.size() +
+                ", Departments count: " + departments.size() +
+                ", Committees count: " + committees.size();
     }
 
     @Override

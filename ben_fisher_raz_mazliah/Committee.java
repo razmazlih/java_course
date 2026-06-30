@@ -1,15 +1,21 @@
 package ben_fisher_raz_matzliach;
 
-public class Committee {
+import java.util.ArrayList;
+import java.io.Serializable;
+
+public class Committee implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private final String name;
     private Lecturer chairman;
-    private Lecturer[] members;
-    private int memberCount;
+    private ArrayList<Lecturer> members;
+    private CommitteeMemberType allowedMemberType;
 
-    public Committee(String name, Lecturer chairman) throws CollegeActionException {
+    public Committee(String name, Lecturer chairman, CommitteeMemberType allowedMemberType)
+            throws CollegeActionException {
         this.name = name;
-        this.members = new Lecturer[2];
-        this.memberCount = 0;
+        this.members = new ArrayList<Lecturer>();
+        this.allowedMemberType = allowedMemberType;
         setChairman(chairman);
     }
 
@@ -21,27 +27,20 @@ public class Committee {
         return chairman;
     }
 
+    public CommitteeMemberType getAllowedMemberType() {
+        return allowedMemberType;
+    }
+
     public int getMemberCount() {
-        return memberCount;
+        return members.size();
     }
 
     public Lecturer getMember(int index) {
-        if (index < 0 || index >= memberCount) {
+        if (index < 0 || index >= members.size()) {
             return null;
         }
 
-        return members[index];
-    }
-
-
-    private void increaseMembersArray() {
-        Lecturer[] newMembers = new Lecturer[members.length * 2];
-
-        for (int i = 0; i < memberCount; i++) { 
-            newMembers[i] = members[i];
-        }
-
-        members = newMembers;
+        return members.get(index);
     }
 
     public void addMember(Lecturer lecturer) throws CollegeActionException {
@@ -53,18 +52,36 @@ public class Committee {
             throw new AlreadyCommitteeMemberException("The chairman cannot also be a regular committee member.");
         }
 
-        for (int i = 0; i < memberCount; i++) {
-            if (members[i] == lecturer) {
-                throw new AlreadyCommitteeMemberException("Lecturer is already a committee member.");
+        if (members.contains(lecturer)) {
+            throw new AlreadyCommitteeMemberException("Lecturer is already a committee member.");
+        }
+
+        checkMemberType(lecturer);
+
+        members.add(lecturer);
+    }
+
+    private void checkMemberType(Lecturer lecturer) throws InvalidCommitteeMemberTypeException {
+        if (allowedMemberType == CommitteeMemberType.REGULAR) {
+            if (lecturer instanceof Doctor) {
+                throw new InvalidCommitteeMemberTypeException(
+                        "This committee only allows regular lecturers (not doctors or professors).");
+            }
+        } else if (allowedMemberType == CommitteeMemberType.DOCTOR) {
+            if (lecturer instanceof Professor) {
+                throw new InvalidCommitteeMemberTypeException(
+                        "This committee only allows doctors (not professors).");
+            }
+            if (!(lecturer instanceof Doctor)) {
+                throw new InvalidCommitteeMemberTypeException(
+                        "This committee only allows doctors.");
+            }
+        } else if (allowedMemberType == CommitteeMemberType.PROFESSOR) {
+            if (!(lecturer instanceof Professor)) {
+                throw new InvalidCommitteeMemberTypeException(
+                        "This committee only allows professors.");
             }
         }
-
-        if (members.length == memberCount) {
-            increaseMembersArray();
-        }
-
-        members[memberCount] = lecturer;
-        memberCount++;
     }
 
     public void removeMember(Lecturer lecturer) throws CollegeActionException {
@@ -72,19 +89,9 @@ public class Committee {
             throw new CollegeActionException("Lecturer does not exist.");
         }
 
-        for (int i = 0; i < memberCount; i++) {
-            if (members[i] == lecturer) {
-                for (int j = i; j < memberCount - 1; j++) {
-                    members[j] = members[j + 1];
-                }
-
-                members[memberCount - 1] = null;
-                memberCount--;
-                return;
-            }
+        if (!members.remove(lecturer)) {
+            throw new CollegeActionException("Lecturer is not a committee member.");
         }
-
-        throw new CollegeActionException("Lecturer is not a committee member.");
     }
 
     public boolean hasMember(Lecturer lecturer) {
@@ -92,17 +99,11 @@ public class Committee {
             return false;
         }
 
-        for (int i = 0; i < memberCount; i++) {
-            if (members[i] == lecturer) {
-                return true;
-            }
-        }
-
-        return false;
+        return members.contains(lecturer);
     }
 
     public int getStaffCount() {
-        int count = memberCount;
+        int count = members.size();
 
         if (chairman != null && !hasMember(chairman)) {
             count++;
@@ -118,9 +119,9 @@ public class Committee {
             total += getArticleCount(chairman);
         }
 
-        for (int i = 0; i < memberCount; i++) {
-            if (members[i] != chairman) {
-                total += getArticleCount(members[i]);
+        for (int i = 0; i < members.size(); i++) {
+            if (members.get(i) != chairman) {
+                total += getArticleCount(members.get(i));
             }
         }
 
@@ -152,11 +153,12 @@ public class Committee {
     public String toString() {
         String result = "Committee name: " + name +
                 ", Chairman: " + chairman +
-                ", Members count: " + memberCount +
+                ", Member type: " + allowedMemberType +
+                ", Members count: " + members.size() +
                 "\nMembers:";
-        
-        for (int i = 0; i < memberCount; i++) {
-            result += "\n" + (i + 1) + ". " + members[i];
+
+        for (int i = 0; i < members.size(); i++) {
+            result += "\n" + (i + 1) + ". " + members.get(i);
         }
 
         return result;
