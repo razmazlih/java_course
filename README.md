@@ -1,319 +1,74 @@
-# משימה 2 – מערכת ניהול מכללה ב־Java
+# Part 3 – College Staff Management System in Java
 
-## מטרת המשימה
+## 1. Project purpose
 
-בשלב 2 אנחנו משדרגים את הקוד משלב 1 ממערכת פשוטה שמחזיקה שמות בתוך מערכים, למערכת מונחית עצמים.  
-במקום לשמור מרצים, ועדות ומחלקות בתור `String`, ניצור מחלקות אמיתיות כמו `Lecturer`, `Department`, `Committee` ו־`College`.
+This project is a simple Java OOP system for managing college staff, departments, and committees. The main file handles the menu, user input, and printing. The other classes hold the system data and actions.
 
-המטרה היא שכל חלק בקוד יהיה אחראי על דבר אחד בלבד:
-- הקובץ הראשי אחראי על תפריט, קלט והדפסות.
-- `College` אחראית על ניהול כל המערכת.
-- המחלקות `Lecturer`, `Department`, `Committee` מייצגות את האובייקטים עצמם.
+## 2. Submitters
 
----
+- Ben Fisher - ID: 213160005
+- Raz Mazliah - ID: 324965094
 
-## עץ הקבצים הסופי
-
-```text
-java_course/
-└── BenFisherRazMazliah/
-    ├── BenFisherRazMazliah.java
-    ├── College.java
-    ├── Lecturer.java
-    ├── Department.java
-    ├── Committee.java
-    └── Degree.java
-```
-
-כל קבצי ה־Java נמצאים בתוך התיקייה והחבילה `BenFisherRazMazliah`.
-
-כדי לקמפל:
+## 3. How to compile
 
 ```bash
 javac BenFisherRazMazliah/*.java
 ```
 
-כדי להריץ:
+## 4. How to run
 
 ```bash
 java BenFisherRazMazliah.BenFisherRazMazliah
 ```
 
-חשוב: אם המחלקה הראשית נקראת `public class BenFisherRazMazliah`, שם הקובץ חייב להיות בדיוק:
+## 5. Main features from previous parts
+
+- Add lecturers.
+- Add committees and departments.
+- Assign lecturers to committees.
+- Update committee chairman.
+- Remove lecturers from committees.
+- Assign lecturers to departments.
+- Show average salary for all lecturers.
+- Show average salary by department.
+- Show all lecturers and all committees.
+
+## 6. New Part 3 features
+
+- Inheritance for `DoctorLecturer` and `ProfessorLecturer`.
+- Article list for doctors and professors.
+- Professor granting body.
+- Custom exception handling with `CollegeActionException`.
+- Committee chairman must be a doctor or professor.
+- Compare doctors/professors by article count.
+- Compare committees by staff count.
+- Compare committees by total article count.
+- Clone committee using the `new-` prefix.
+- `toString` and `equals` in all classes.
+- Required `MarathonClassDiagram.pdf`.
+
+## 7. File structure
 
 ```text
-BenFisherRazMazliah.java
+java_course/
+├── README.md
+├── MarathonClassDiagram.pdf
+├── MarathonClassDiagram.puml
+└── BenFisherRazMazliah/
+    ├── ArticleWriter.java
+    ├── BenFisherRazMazliah.java
+    ├── College.java
+    ├── CollegeActionException.java
+    ├── Committee.java
+    ├── Degree.java
+    ├── Department.java
+    ├── DoctorLecturer.java
+    ├── Lecturer.java
+    └── ProfessorLecturer.java
 ```
 
-ולא באותיות קטנות.
-
----
-
-## חלוקת עבודה
-
-### בן – אחראי על מחלקות האובייקטים
-
-בן אחראי לבנות את המחלקות שמייצגות את הדברים במערכת.  
-הוא לא אמור להתעסק עם תפריט, `Scanner`, או הדפסות למשתמש.
-
-הקבצים של בן:
-
-```text
-Lecturer.java
-Department.java
-Committee.java
-Degree.java
-```
-
-מה בן צריך לעשות:
-
-1. ליצור `Degree.java` בתור `enum` של סוגי תארים:
-   - `FIRST`
-   - `SECOND`
-   - `DOCTOR`
-   - `PROFESSOR`
-
-2. ליצור `Lecturer.java`:
-   - שם מרצה
-   - תעודת זהות
-   - סוג תואר
-   - שם התואר
-   - שכר
-   - מחלקה שאליה המרצה שייך
-   - רשימת ועדות שהמרצה חבר בהן
-
-3. ליצור `Department.java`:
-   - שם מחלקה
-   - מספר סטודנטים
-   - מערך מרצים במחלקה
-   - חישוב ממוצע שכר של מרצי המחלקה
-
-4. ליצור `Committee.java`:
-   - שם ועדה
-   - יו״ר ועדה
-   - חברי ועדה
-   - הוספת חבר
-   - הסרת חבר
-   - בדיקה שלא מוסיפים אותו חבר פעמיים
-
-בן צריך לדאוג שכל מחלקה תכלול:
-- שדות `private`
-- קונסטרקטור
-- מתודות `get`
-- מתודות `set` רק כשצריך
-- מתודות פעולה כמו `addMember`, `removeMember`, `addLecturer`
-- `toString` מסודר
-
----
-
-### רז – אחראי על המערכת הראשית והחיבור
-
-רז אחראי לקחת את הקוד הקיים ולחבר אותו למחלקות שבן כתב.  
-הוא כן מתעסק עם `main`, תפריט, `Scanner`, קלט והדפסות.
-
-הקבצים של רז:
-
-```text
-BenFisherRazMazliah.java
-College.java
-```
-
-מה רז צריך לעשות:
-
-1. ליצור `College.java`:
-   - מערך של כל המרצים
-   - מערך של כל המחלקות
-   - מערך של כל הוועדות
-   - פעולות שמנהלות את כל המערכת
-
-2. להעביר את הניהול מתוך `main` אל `College`:
-   - לא לשמור מערכים של מרצים בתוך `main`
-   - לא לנהל לוגיקה מורכבת בתוך `main`
-   - `main` רק קולט נתונים וקורא לפעולות של `College`
-
-3. לעדכן את התפריט הראשי:
-   - הוספת מרצה
-   - הוספת ועדה
-   - הוספת חבר לוועדה
-   - עדכון יו״ר ועדה
-   - הסרת חבר מוועדה
-   - הוספת מחלקה
-   - שיוך מרצה למחלקה
-   - ממוצע שכר כללי
-   - ממוצע שכר לפי מחלקה
-   - הצגת כל המרצים
-   - הצגת כל הוועדות
-
-4. לדאוג להודעות ברורות למשתמש:
-   - אם מרצה לא קיים
-   - אם ועדה לא קיימת
-   - אם מחלקה לא קיימת
-   - אם הפעולה הצליחה
-   - אם הפעולה נכשלה
-
----
-
-## כללי עבודה כדי שלא נתנגש
-
-1. בן לא משנה את `main` בלי לתאם עם רז.
-2. רז לא משנה את השדות הפנימיים במחלקות של בן בלי לתאם.
-3. לפני שמתחילים לחבר הכול, מסכימים על שמות המתודות.
-4. כל אחד בודק שהקבצים שלו מתקמפלים לפני שמעלים לגיטהאב.
-5. לא מעלים קוד שבור ל־`main`.
-6. אם משנים שם של מתודה, מודיעים לצד השני.
-
----
-
-## שמות מתודות מומלצים
-
-### ב־College
-
-```java
-addLecturer(...)
-addDepartment(...)
-addCommittee(...)
-addLecturerToDepartment(...)
-addLecturerToCommittee(...)
-removeLecturerFromCommittee(...)
-updateCommitteeChairman(...)
-getAverageSalary()
-getDepartmentAverageSalary(...)
-getAllLecturersDetails()
-getAllCommitteesDetails()
-```
-
-### ב־Department
-
-```java
-addLecturer(...)
-getAverageSalary()
-toString()
-```
-
-### ב־Committee
-
-```java
-setChairman(...)
-addMember(...)
-removeMember(...)
-toString()
-```
-
-### ב־Lecturer
-
-```java
-setDepartment(...)
-addCommittee(...)
-removeCommittee(...)
-toString()
-```
-
----
-
-## שאלות נפוצות
-
-### איפה עושים קלט מהמשתמש?
-
-רק ב־`BenFisherRazMazliah.java`.  
-רק שם משתמשים ב־`Scanner`.
-
----
-
-### איפה מדפיסים למסך?
-
-רק ב־`BenFisherRazMazliah.java`.  
-שאר המחלקות מחזירות מידע, אבל לא מדפיסות בעצמן.
-
----
-
-### למה צריך את `College`?
-
-כי `College` היא המחלקה שמנהלת את כל המערכת.  
-במקום שה־`main` יחזיק מערכים ויעשה את כל העבודה, `main` שולח בקשות ל־`College`.
-
----
-
-### למה לא לשים הכול ב־main?
-
-כי זה יוצר קוד ארוך, מבולגן וקשה לתיקון.  
-בשלב 2 המטרה היא לעבוד מונחה עצמים, כלומר לחלק אחריות בין מחלקות.
-
----
-
-### מי אחראי לבדוק אם מרצה כבר קיים?
-
-`College`.  
-כי היא מחזיקה את כל המרצים במערכת.
-
----
-
-### מי אחראי לבדוק אם מרצה כבר נמצא בוועדה?
-
-`Committee`.  
-כי היא מחזיקה את חברי הוועדה.
-
----
-
-### מי אחראי לחשב ממוצע שכר במחלקה?
-
-`Department`.  
-כי היא מכירה את המרצים ששייכים אליה.
-
----
-
-### מה עושים אם מערך מתמלא?
-
-מגדילים אותו פי 2.  
-זו פעולה שצריכה להיות בתוך המחלקה שמחזיקה את המערך.
-
----
-
-## סדר עבודה מומלץ
-
-1. בן יוצר את `Degree`, `Lecturer`, `Department`, `Committee`.
-2. רז יוצר את `College`.
-3. רז מעדכן את `main` כך שיעבוד מול `College`.
-4. מחברים את הכול יחד.
-5. בודקים פעולה־פעולה מהתפריט.
-6. רק אחרי שהכול רץ, מנקים הודעות ושמות משתנים.
-
----
-
-## בדיקות לפני הגשה
-
-לפני שמגישים צריך לבדוק:
-
-- התוכנית מתקמפלת.
-- כל קבצי ה־Java נמצאים בתוך התיקייה והחבילה `BenFisherRazMazliah`.
-- שם הקובץ הראשי מתאים לשם המחלקה הראשית.
-- אפשר להוסיף מרצה.
-- אפשר להוסיף מחלקה.
-- אפשר להוסיף ועדה.
-- אפשר לשייך מרצה למחלקה.
-- אפשר להוסיף מרצה לוועדה.
-- אי אפשר להוסיף כפילויות.
-- ממוצע שכר כללי עובד.
-- ממוצע שכר לפי מחלקה עובד.
-- הצגת כל המרצים עובדת.
-- הצגת כל הוועדות עובדת.
-
----
-
-## סיכום קצר
-
-בן בונה את האובייקטים.  
-רז בונה את המערכת שמנהלת אותם ואת התפריט שמפעיל אותה.
-
-החלוקה הסופית:
-
-```text
-בן:
-- Lecturer.java
-- Department.java
-- Committee.java
-- Degree.java
-
-רז:
-- College.java
-- BenFisherRazMazliah.java
-```
+## 8. Final submission notes
+
+- Submit Java files only, not `.class` files.
+- Include `MarathonClassDiagram.pdf`.
+- Code must compile before submission.
