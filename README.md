@@ -17,7 +17,7 @@ The other classes contain the system logic and do not use `Scanner` or print to 
 ## 3. How to compile
 
 ```bash
-javac -encoding UTF-8 -d out $(find ben_fisher_raz_mazliah -name "*.java")
+javac -encoding UTF-8 -d out $(find ben_fisher_raz_matzliach -name "*.java")
 ```
 
 ## 4. How to run
@@ -41,7 +41,7 @@ java -cp out ben_fisher_raz_matzliach.Main
 ## 6. Part 3 features (still working)
 
 - Inheritance for `Doctor` and `Professor`.
-- Article list for doctors and professors.
+- Article list for doctors and professors (using `ArrayList<Article>`).
 - Professor granting body.
 - Custom exception handling with `CollegeActionException`, `InvalidChairmanException`,
   and `AlreadyCommitteeMemberException`.
@@ -54,8 +54,9 @@ java -cp out ben_fisher_raz_matzliach.Main
 
 ## 7. New Part 4 features
 
-- **ArrayList instead of arrays**: All arrays in `College`, `Committee`, `Department`, `Lecturer`,
-  and `Doctor` replaced with `ArrayList`. No more count fields or manual array doubling.
+- **ArrayList instead of arrays**: All arrays replaced with `ArrayList` with full Generics,
+  including the article lists in `Doctor` and `Professor`. No raw ArrayLists, no count fields,
+  no manual array doubling or copying.
 - **Binary save and load**: On exit, the system saves all data to `college_data.dat` using
   `ObjectOutputStream`. On startup, if the file exists, data is loaded with `ObjectInputStream`.
   If the file is missing or corrupted, the system starts fresh.
@@ -75,7 +76,7 @@ java -cp out ben_fisher_raz_matzliach.Main
 BenFisherRazMazliah/
 |-- README.md
 |-- mermaid-diagram.pdf
-`-- ben_fisher_raz_mazliah/
+`-- ben_fisher_raz_matzliach/
     |-- AlreadyCommitteeMemberException.java
     |-- Article.java
     |-- ArticleWriter.java
@@ -125,7 +126,7 @@ The program was compiled cleanly and tested manually through the menu:
 ## 10. Final submission notes
 
 - Submit only the package folder with Java files:
-  `ben_fisher_raz_mazliah/` (all `.java` files).
+  `ben_fisher_raz_matzliach/` (all `.java` files).
 - Do **not** submit `.class`, `out`, `build`, or `college_data.dat` files.
 - Include `mermaid-diagram.pdf`.
 - Code must compile before submission.
