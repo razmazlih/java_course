@@ -1,4 +1,4 @@
-package BenFisherRazMazliah;
+package ben_fisher_raz_matzliach;
 
 public class DoctorLecturer extends Lecturer implements ArticleWriter {
     private final String[] articles;

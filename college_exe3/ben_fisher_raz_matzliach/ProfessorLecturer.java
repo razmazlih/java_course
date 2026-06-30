@@ -1,4 +1,4 @@
-package BenFisherRazMazliah;
+package ben_fisher_raz_matzliach;
 
 public class ProfessorLecturer extends DoctorLecturer {
     private final String professorshipBody;

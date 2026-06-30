@@ -1,4 +1,4 @@
-package BenFisherRazMazliah;
+package ben_fisher_raz_matzliach;
 
 public interface ArticleWriter {
     int getArticleCount();

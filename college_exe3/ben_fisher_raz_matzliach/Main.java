@@ -2,11 +2,11 @@
 // Ben Fisher - ID: 213160005
 // Raz Mazliah - ID: 324965094
 
-package BenFisherRazMazliah;
+package ben_fisher_raz_matzliach;
 
 import java.util.Scanner;
 
-public class BenFisherRazMazliah {
+public class Main {
     public static void main(String[] args) {
         try (Scanner scanner = new Scanner(System.in)) {
             String collegeName = readNonEmptyString(scanner, "Enter college name: ");

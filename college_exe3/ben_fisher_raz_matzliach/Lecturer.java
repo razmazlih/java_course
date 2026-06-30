@@ -1,4 +1,4 @@
-package BenFisherRazMazliah;
+package ben_fisher_raz_matzliach;
 
 public class Lecturer {
     private final String name;
