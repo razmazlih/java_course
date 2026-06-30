@@ -5,7 +5,7 @@
 This project is a beginner-level Java OOP system for managing college staff, departments, and committees.
 It uses classes, inheritance, interfaces, enums, arrays, custom exceptions, `toString`, and `equals`.
 
-All user input and screen output are handled only in `BenFisherRazMazliah.java`.
+All user input and screen output are handled only in `Main.java`.
 The other classes contain the system logic and do not use `Scanner` or print to the screen.
 
 ## 2. Submitters
@@ -16,13 +16,13 @@ The other classes contain the system logic and do not use `Scanner` or print to 
 ## 3. How to compile
 
 ```bash
-javac BenFisherRazMazliah/*.java
+javac -encoding UTF-8 -d out $(find college_exe3 -name "*.java")
 ```
 
 ## 4. How to run
 
 ```bash
-java BenFisherRazMazliah.BenFisherRazMazliah
+java -cp out ben_fisher_raz_matzliach.Main
 ```
 
 ## 5. Main features from previous parts
@@ -50,18 +50,18 @@ java BenFisherRazMazliah.BenFisherRazMazliah
 - Clone committee using `new-` prefix.
 - `toString` and `equals` in all classes.
 - Dynamic arrays expand by exactly x2.
-- `MarathonClassDiagram.pdf`.
+- `marathon_uml_diagram.pdf` class diagram file.
 
 ## 7. File structure
 
 ```text
 java_course/
 |-- README.md
-|-- MarathonClassDiagram.pdf
-|-- MarathonClassDiagram.puml
-`-- BenFisherRazMazliah/
+|-- marathon_uml_diagram.pdf
+`-- college_exe3/
+    `-- ben_fisher_raz_matzliach/
     |-- ArticleWriter.java
-    |-- BenFisherRazMazliah.java
+    |-- Main.java
     |-- College.java
     |-- CollegeActionException.java
     |-- Committee.java
@@ -75,6 +75,6 @@ java_course/
 ## 8. Final submission notes
 
 - Submit Java files only, not `.class` files.
-- Include `MarathonClassDiagram.pdf`.
+- Include `marathon_uml_diagram.pdf`.
 - Code must compile before submission.
 - The project avoids `ArrayList`, `HashMap`, collections, streams, generics, reflection, and advanced libraries.
