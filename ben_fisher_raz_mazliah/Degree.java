@@ -1,6 +1,8 @@
 package ben_fisher_raz_matzliach;
 
-public enum Degree {
+import java.io.Serializable;
+
+public enum Degree implements Serializable {
     FIRST(1),
     SECOND(2),
     DOCTOR(3),
