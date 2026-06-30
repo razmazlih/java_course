@@ -1,9 +1,9 @@
 package ben_fisher_raz_matzliach;
 
-public class ProfessorLecturer extends DoctorLecturer {
+public class Professor extends Doctor {
     private final String professorshipBody;
 
-    public ProfessorLecturer(String name, int idNumber, String degreeName, double salary, Article[] articles,
+    public Professor(String name, int idNumber, String degreeName, double salary, Article[] articles,
             String professorshipBody) throws CollegeActionException {
         super(name, idNumber, Degree.PROFESSOR, degreeName, salary, articles);
         this.professorshipBody = professorshipBody;

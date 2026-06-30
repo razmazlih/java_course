@@ -1,15 +1,15 @@
 package ben_fisher_raz_matzliach;
 
-public class DoctorLecturer extends Lecturer implements ArticleWriter {
+public class Doctor extends Lecturer implements ArticleWriter {
     private Article[] articles;
     private int articleCount;
 
-    public DoctorLecturer(String name, int idNumber, String degreeName, double salary, Article[] articles)
+    public Doctor(String name, int idNumber, String degreeName, double salary, Article[] articles)
             throws CollegeActionException {
         this(name, idNumber, Degree.DOCTOR, degreeName, salary, articles);
     }
 
-    protected DoctorLecturer(String name, int idNumber, Degree degree, String degreeName, double salary,
+    protected Doctor(String name, int idNumber, Degree degree, String degreeName, double salary,
             Article[] articles) throws CollegeActionException {
         super(name, idNumber, degree, degreeName, salary);
         this.articles = new Article[2];

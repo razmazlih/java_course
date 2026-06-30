@@ -110,13 +110,13 @@ public class Main {
         Article[] articles = new Article[0];
         String professorshipBody = "";
 
-        if (degree == Degree.DOCTOR || degree == Degree.PROFESSOR) {
-            articles = readArticles(scanner);
-        }
-
         if (degree == Degree.PROFESSOR) {
             professorshipBody = readNonEmptyString(scanner,
                     "Enter the organization/body that granted the professorship: ");
+        }
+
+        if (degree == Degree.DOCTOR || degree == Degree.PROFESSOR) {
+            articles = readArticles(scanner);
         }
 
         String degreeName = readNonEmptyString(scanner, "Enter degree name: ");
@@ -125,9 +125,9 @@ public class Main {
 
         try {
             if (degree == Degree.DOCTOR) {
-                lecturer = new DoctorLecturer(name, idNumber, degreeName, salary, articles);
+                lecturer = new Doctor(name, idNumber, degreeName, salary, articles);
             } else if (degree == Degree.PROFESSOR) {
-                lecturer = new ProfessorLecturer(name, idNumber, degreeName, salary, articles, professorshipBody);
+                lecturer = new Professor(name, idNumber, degreeName, salary, articles, professorshipBody);
             } else {
                 lecturer = new Lecturer(name, idNumber, degree, degreeName, salary);
             }
